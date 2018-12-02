@@ -10,24 +10,16 @@ nunjucks.configure('views', {
     express: app
 })
 
-// Record request time
-time_logger = function (req, res, next) {
-    console.log(moment().format("YYYY-MM-DD HH:mm:ss.SSS"))
-    next()
-}
 
 // Traverse 'routes' directory, execute require & app.use
 function load_routes(dir) {
-    app.use(express.static(__dirname + '/public'))
-    app.use(time_logger)
-
     const fs = require('fs')
     fs.readdir(dir, function (err, files) {
         if (err) {
             console.log(err)
             return false
         }
-        files.forEach(function (name) {
+        files.forEach(function (name) { 
             if (name.endsWith('\.js')) {
                 route = name.replace('\.js', '')
                 js = ('{route}=require("./{dir}/{route}");' +
@@ -40,6 +32,19 @@ function load_routes(dir) {
     })
 }
 
+request_filter = function (req, res, next) {
+    console.log('%s url[%s]', moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.url)
+    next()
+}
+
+// login_filter = function (req, res, next) {
+//     console.log(moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu')
+//     next()
+// }
+
+app.use(express.static(__dirname + '/public'))
+app.use(request_filter)
+// app.use(login_filter)
 load_routes('routes')
 
 const server = app.listen(port, function () {

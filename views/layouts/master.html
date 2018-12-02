@@ -79,31 +79,22 @@
             <div class="layui-side-scroll">
                 <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
                 <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <!-- <li class="layui-nav-item layui-nav-itemed">
+                    {# <li class="layui-nav-item layui-nav-itemed">
                                   <a class="" href="javascript:;">所有商品</a>
                                   <dl class="layui-nav-child">
                                     <dd><a href="javascript:;">列表一</a></dd>
                                     <dd><a href="javascript:;">列表二</a></dd>
                                   </dl>
-                                </li> -->
+                                </li> #}
                     <li class="layui-nav-item nav-extend-box"><a><i class="layui-icon layui-icon-spread-left"></i></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon icon-python"></i><span>Python</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon icon-nodejs"></i><span>Node</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon icon-go"></i><span>Golang</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon icon-spring"></i><span>Spring-boot</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>爬虫</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>数据挖掘</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>机器学习</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>区块链</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>UNP</span></a></li>
-                    <li class="layui-nav-item"><a href=""><i class="layui-icon layui-icon-tips"></i><span>ACM</span></a></li>
+                    {% block menu %}{% endblock %}
                 </ul>
             </div>
         </div>
 
         <div class="layui-body">
             <!-- 内容主体区域 -->
-            <div style="padding: 15px;">内容主体区域<span class="stats">分享:51, 评论:28, 回复:20</span></div>
+            {# <div style="padding: 15px;">内容主体区域<span class="stats">分享:51, 评论:28, 回复:20</span></div> #} 
             <div style="padding: 20px; background-color: #F2F2F2;">
                 <div class="layui-row layui-col-space15">
                     {% block content %}{% endblock %}

@@ -5,6 +5,12 @@
 {% block css %}
 {% endblock %}
 
+{% block menu %}
+{% for item in items %}
+<li class="layui-nav-item"><a href=""><i class="layui-icon {{item.logo}}"></i><span>{{item.name}}</span></a></li>
+{% endfor %}
+{% endblock %}
+
 {% block content %}
 <div class="layui-col-md12">
   <div class="layui-card">
