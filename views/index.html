@@ -33,17 +33,29 @@
 
 {% block javascript %}
 <script>
-    layui.use(['laypage'], function () {
+    layui.config({
+        base: '/layui/'
+    });
+    layui.use(['laypage', 'jquery'], function () {
         var laypage = layui.laypage;
+        var $ = layui.$;
         laypage.render({
             elem: 'page',
             count: '{{total}}',
             limit: '{{limit}}',
             curr: '{{pageid}}',
             jump: function (obj, first) {
-                console.log(obj)
                 if (!first) {
-                    location.href = '/' + obj.curr
+                    form = $("<form></form>")
+                    form.attr('action', '/')
+                    form.attr('method', 'post')
+                    form.css('display', 'none')
+                    input = $('<input type="hidden" name="pageid">')
+                    input.attr('value', obj.curr)
+                    form.append(input)
+                    $('body').append(form)
+                    form.submit()
+                    // location.href = '/' + obj.curr
                 }
             }
         })

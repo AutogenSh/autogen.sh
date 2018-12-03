@@ -122,46 +122,61 @@
 
 <script src="/layui/layui.js"></script>
 <script>
-    //JavaScript代码区域
-    layui.use(['element', 'layer'], function () {
-        var element = layui.element;
+    function expand($) {
+        $('.layui-side.layui-bg-black').width(150); //设置宽度
+        $('.layui-nav.layui-nav-tree').width(150); //设置宽度
+        $('.layui-body').css('left', '150px');
+        $('.layui-footer').css('left', '150px');
+        $('.layui-nav .layui-nav-item a').css('padding', '0 20px').css('text-align', 'initial');
+        $('dd span').each(function () {
+            $(this).show();
+        });
+        $('.layui-nav-item span').each(function () {
+            $(this).show()
+        });
+    }
+    function collapse($) {
+        $('.layui-side.layui-bg-black').width(50); //设置宽度
+        $('.layui-nav.layui-nav-tree').width(50); //设置宽度
+        //将footer和body的宽度修改
+        $('.layui-body').css('left', '50px');
+        $('.layui-footer').css('left', '50px');
+        $('.layui-nav .layui-nav-item a').css('padding', '0 0').css('text-align', 'center')
+        //将二级导航栏隐藏
+        $('dd span').each(function () {
+            $(this).hide();
+        });
+        $('.layui-nav-item span').each(function () {
+            $(this).hide()
+        });
+    }
+
+    layui.config({
+        base: '/layui/'
+    });
+
+    layui.use(['jquery', 'layer', 'cookie'], function () {
         var layer = layui.layer;
         var $ = layui.$;
+        var cookie = layui.cookie;
 
         // Navicat缩放
-        var navextend = true;
+        var navex = $.cookie('navex');
+        if (navex === null || navex == 'true') {
+            //expand($);
+            navex = 'true'
+        } else {
+            collapse($);
+        }
         $('.nav-extend-box').click(function () {
-            $('.layui-nav-item span').each(function () {
-                if ($(this).is(':hidden')) {
-                    $(this).show()
-                } else {
-                    $(this).hide()
-                }
-            });
-            if (navextend) {
-                $('.layui-side.layui-bg-black').width(50); //设置宽度
-                $('.layui-nav.layui-nav-tree').width(50); //设置宽度
-                //将footer和body的宽度修改
-                $('.layui-body').css('left', '50px');
-                $('.layui-footer').css('left', '50px');
-                $('.layui-nav .layui-nav-item a').css('padding', '0 0').css('text-align', 'center')
-                //将二级导航栏隐藏
-                $('dd span').each(function () {
-                    $(this).hide();
-                });
-                //修改标志位
-                navextend = false;
+            if (navex === 'true') {
+                collapse($)
+                navex = false;
             } else {
-                $('.layui-side.layui-bg-black').width(150); //设置宽度
-                $('.layui-nav.layui-nav-tree').width(150); //设置宽度
-                $('.layui-body').css('left', '150px');
-                $('.layui-footer').css('left', '150px');
-                $('.layui-nav .layui-nav-item a').css('padding', '0 20px').css('text-align', 'initial');
-                $('dd span').each(function () {
-                    $(this).show();
-                });
-                navextend = true;
+                expand($)
+                navex = true;
             }
+            $.cookie('navex', navex, { expires: 30, path: '/' });
         });
     });
 </script>

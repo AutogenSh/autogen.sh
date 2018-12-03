@@ -1,4 +1,6 @@
 const express = require('express')
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
 const db = require('../config/db')
 const home = express.Router()
 
@@ -63,9 +65,25 @@ load_article = function (param) {
     })
 }
 
-home.get(['/', '/:id'], function (req, res) {
+home.post('/', function (req, res) {
     var param = {}
-    param.pageid = req.params.id || 1
+    param.pageid = req.body.pageid || 1
+    param.limit = 3
+    load_menu(param)
+        .then(load_article_count)
+        .then(load_article)
+        .then(function (param) {
+            res.render('index.html', param)
+        })
+        .catch(function (reason) {
+            res.end('<p>' + reason + '</p>')
+        })
+})
+
+home.get('/', function (req, res) {
+    // req.cookies.pageid
+    var param = {}
+    param.pageid = 1
     param.limit = 3
     load_menu(param)
         .then(load_article_count)

@@ -1,4 +1,6 @@
 const express = require('express')
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 const nunjucks = require('nunjucks')
 const moment = require("moment")
 const port = process.env.PORT || 8888
@@ -43,6 +45,10 @@ request_filter = function (req, res, next) {
 //     next()
 // }
 
+app.use(bodyParser.urlencoded({
+    extended:true
+}));
+app.use(cookieParser())
 app.use(express.static(__dirname + '/public'))
 app.use(request_filter)
 // app.use(login_filter)
