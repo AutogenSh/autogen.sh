@@ -59,6 +59,7 @@ load_markdown = function (param) {
 
 page.get('/:id', function (req, res) {
     var param = {}
+    param.navex = (req.cookies.navex == null)? 'true' : req.cookies.navex
     param.id = req.params.id
     load_menu(param)
         .then(load_article_detail)

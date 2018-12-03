@@ -54,6 +54,7 @@ load_article_list = function (param) {
 
 home.post('/', function (req, res) {
     var param = {}
+    param.navex = (req.cookies.navex == null)? 'true' : req.cookies.navex
     param.pageid = req.body.pageid || 1
     param.limit = 3
     load_menu(param)
@@ -69,6 +70,7 @@ home.post('/', function (req, res) {
 
 home.get('/', function (req, res) {
     var param = {}
+    param.navex = (req.cookies.navex == null)? 'true' : req.cookies.navex
     param.pageid = 1
     param.limit = 3
     load_menu(param)
@@ -84,6 +86,7 @@ home.get('/', function (req, res) {
 
 home.get('/about', function about(req, res) {
     var param = {}
+    param.navex = (req.cookies.navex == null)? 'true' : req.cookies.navex
     load_menu(param)
     .then(function (param) {
         res.render('about.html', param)

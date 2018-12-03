@@ -23,20 +23,6 @@
             width: 150px;
         }
 
-        .layui-layout-admin .layui-body {
-            top: 0;
-            bottom: 0;
-            left: 150px;
-        }
-
-        .layui-side .layui-bg-black {
-            width: 150px;
-        }
-
-        .layui-layout-admin .layui-nav-tree {
-            width: 150px;
-        }
-
         .layui-layout-admin .layui-footer {
             position: initial;
             bottom: 0;
@@ -49,6 +35,11 @@
         .layui-footer a {
             color: #999;
             background-color: #F2F2F2;
+        }
+
+        .layui-layout-admin .layui-body {
+            top: 0;
+            bottom: 0;
         }
 
         .layui-layout-admin .layui-body .stats {
@@ -128,9 +119,6 @@
         $('.layui-body').css('left', '150px');
         $('.layui-footer').css('left', '150px');
         $('.layui-nav .layui-nav-item a').css('padding', '0 20px').css('text-align', 'initial');
-        $('dd span').each(function () {
-            $(this).show();
-        });
         $('.layui-nav-item span').each(function () {
             $(this).show()
         });
@@ -138,14 +126,9 @@
     function collapse($) {
         $('.layui-side.layui-bg-black').width(50); //设置宽度
         $('.layui-nav.layui-nav-tree').width(50); //设置宽度
-        //将footer和body的宽度修改
         $('.layui-body').css('left', '50px');
         $('.layui-footer').css('left', '50px');
         $('.layui-nav .layui-nav-item a').css('padding', '0 0').css('text-align', 'center')
-        //将二级导航栏隐藏
-        $('dd span').each(function () {
-            $(this).hide();
-        });
         $('.layui-nav-item span').each(function () {
             $(this).hide()
         });
@@ -155,26 +138,19 @@
         base: '/layui/'
     });
 
-    layui.use(['jquery', 'layer', 'cookie'], function () {
-        var layer = layui.layer;
+    layui.use(['jquery', 'cookie'], function () {
         var $ = layui.$;
         var cookie = layui.cookie;
 
         // Navicat缩放
         var navex = $.cookie('navex');
-        if (navex === null || navex == 'true') {
-            //expand($);
-            navex = 'true'
-        } else {
-            collapse($);
-        }
         $('.nav-extend-box').click(function () {
-            if (navex === 'true') {
-                collapse($)
-                navex = false;
-            } else {
+            if (navex === 'false') {
                 expand($)
-                navex = true;
+                navex = 'true'
+            } else {
+                collapse($)
+                navex = 'false'
             }
             $.cookie('navex', navex, { expires: 30, path: '/' });
         });

@@ -10,6 +10,47 @@
 .layui-icon {
     margin-bottom: -3px;
 }
+    {% if navex === 'true' %}
+    .layui-side.layui-bg-black {
+        width: 150px;
+    }
+    .layui-nav.layui-nav-tree {
+        width: 150px;
+    }
+    .layui-body {
+        left: 150px;
+    }
+    .layui-footer {
+        left: 150px;
+    }
+    .layui-nav .layui-nav-item a {
+        padding: 0 20px;
+        text-align: initial;
+    }
+    .layui-nav-item span {
+        display: initial;
+    }
+    {% else %}
+    .layui-side.layui-bg-black {
+        width: 50px;
+    }
+    .layui-nav.layui-nav-tree {
+        width: 50px;
+    }
+    .layui-body {
+        left: 50px;
+    }
+    .layui-footer {
+        left: 50px;
+    }
+    .layui-nav .layui-nav-item a {
+        padding: 0 0;
+        text-align: center;
+    }
+    .layui-nav-item span {
+        display: none;
+    }
+    {% endif %}
 </style>
 {% endblock %}
 
