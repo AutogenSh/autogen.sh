@@ -23,7 +23,6 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "body-parser": "^1.18.3",
-    "code-prettify": "^0.1.0",
     "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.4",

@@ -45,7 +45,7 @@ load_article_detail = function (param) {
 
 load_markdown = function (param) {
     return new Promise(function (resolve, reject) {
-        var path = 'public/uploads/' + param.article.id + '.md'
+        var path = './public/uploads/' + param.article.id + '.md'
         fs.readFile(path, 'utf8', function (err, data) {
             if (err) {
                 reject(err)
