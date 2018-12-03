@@ -8,9 +8,21 @@
     .layui-card-body {
         line-height: 32px
     }
+
     code ol {
-        /* background: #333; */
-        padding-left: 30px
+        counter-reset: number;
+        list-style-type: none;
+    }
+
+    code ol li {
+        list-style-type: none !important;
+    }
+
+    code ol li::before {
+        counter-increment: number;
+        content: counter(number)"\a0";
+        display: inline-block;
+        width: 2.5em;
     }
 </style>
 {% endblock %}
