@@ -3,10 +3,15 @@
 {% block title %}Autogen's Lab / 服务端开发{% endblock %}
 
 {% block css %}
+<style>
+.layui-card-body {
+  line-height: 30px
+}
+</style>
 {% endblock %}
 
 {% block menu %}
-{% for item in items %}
+{% for item in menus %}
 <li class="layui-nav-item"><a href=""><i class="layui-icon {{item.logo}}"></i><span>{{item.name}}</span></a></li>
 {% endfor %}
 {% endblock %}
@@ -14,45 +19,13 @@
 {% block content %}
 <div class="layui-col-md12">
   <div class="layui-card">
-    <div class="layui-card-header">详情页面 -- 标题</div>
+    <div class="layui-card-header">{{article.title}}</div>
     <div class="layui-card-body">
-      <p>
-        第一段
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-      </p>
-      <p>
-        第二段
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-      </p>
-      <p>
-        第三段
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-        详情<br>
-      </p>
-      详情<br>
-      详情<br>
-      详情<br>
-      详情<br>
-      详情<br>
+      {{md | safe}}
       <br>
       <br>
       <br>
-      <br>
-      <span class="update-time">修改时间：2018/11/26</span>
+      <span class="update-time">修改时间：{{article.create_at}}</span>
     </div>
   </div>
 </div>

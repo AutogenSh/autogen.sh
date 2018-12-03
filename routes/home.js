@@ -7,7 +7,7 @@ const home = express.Router()
 load_menu = function (param) {
     return new Promise(function (resolve, reject) {
         sql = 'select `name`, `logo`, `permission` from `t_menu_item` order by `order`'
-        db.query(sql, function (err, menus) {
+        db.query(sql, [], function (err, menus) {
             if (err) {
                 reject(err)
             } else {
@@ -21,7 +21,7 @@ load_menu = function (param) {
 load_article_count = function (param) {
     return new Promise(function (resolve, reject) {
         sql = 'select count(1) as total from `t_article`'
-        db.query(sql, function (err, rows) {
+        db.query(sql, [], function (err, rows) {
             if (err) {
                 reject(err)
             } else {
@@ -32,20 +32,20 @@ load_article_count = function (param) {
     })
 }
 
-load_article = function (param) {
+load_article_list = function (param) {
     return new Promise(function (resolve, reject) {
         var low = (param.pageid - 1) * param.limit
         var high = low + param.limit
         high = (high <= param.total) ? high : param.total
         sql = 'select `id`, `title`, `summary`, `create_by`, `create_at`, `modify_at` ' +
-            'from `t_article` where `status`=1 order by `create_at` desc limit ' + low + ',' + high
+            'from `t_article` where `status`=? order by `create_at` desc limit ?,?'
         // console.log('#home ==> limit[%d] page[%d]\nsql[%s]', param.limit, param.pageid, sql)
-        db.query(sql, function (err, articles) {
+        db.query(sql, [1, low, high], function (err, articles) {
             if (err) {
                 reject(err)
             } else {
                 param.articles = articles
-                // console.log('##### load_article page=', param)
+                // console.log('##### load_article_list page=', param)
                 resolve(param)
             }
         })
@@ -58,7 +58,7 @@ home.post('/', function (req, res) {
     param.limit = 3
     load_menu(param)
         .then(load_article_count)
-        .then(load_article)
+        .then(load_article_list)
         .then(function (param) {
             res.render('index.html', param)
         })
@@ -73,7 +73,7 @@ home.get('/', function (req, res) {
     param.limit = 3
     load_menu(param)
         .then(load_article_count)
-        .then(load_article)
+        .then(load_article_list)
         .then(function (param) {
             res.render('index.html', param)
         })

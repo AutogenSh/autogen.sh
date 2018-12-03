@@ -10,12 +10,12 @@ var pool = mysql.createPool({
 });
 
 // cb = function(err, rows)
-var query = function(sql, cb) {
+var query = function(sql, values, cb) {
     pool.getConnection(function(err, conn){
         if (err) {
             console.log(err)
         } else {
-            conn.query(sql, function(err, rows) {
+            conn.query(sql, values, function(err, rows) {
                 cb(err, rows)
                 conn.release()
             })
