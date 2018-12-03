@@ -4,19 +4,6 @@ const multipartMiddleware = multipart();
 const db = require('../config/db')
 const home = express.Router()
 
-
-home.get('/about', function about(req, res) {
-    sql = 'select `name`, `logo`, `permission` from `t_menu_item` order by `order`'
-    db.query(sql, function (err, rows) {
-        if (err) {
-            res.statusCode = 502
-            res.end(err)
-        } else {
-            res.render('about.html', { items: rows })
-        }
-    })
-})
-
 load_menu = function (param) {
     return new Promise(function (resolve, reject) {
         sql = 'select `name`, `logo`, `permission` from `t_menu_item` order by `order`'
@@ -81,7 +68,6 @@ home.post('/', function (req, res) {
 })
 
 home.get('/', function (req, res) {
-    // req.cookies.pageid
     var param = {}
     param.pageid = 1
     param.limit = 3
@@ -94,6 +80,17 @@ home.get('/', function (req, res) {
         .catch(function (reason) {
             res.end('<p>' + reason + '</p>')
         })
+})
+
+home.get('/about', function about(req, res) {
+    var param = {}
+    load_menu(param)
+    .then(function (param) {
+        res.render('about.html', param)
+    })
+    .catch(function (reason) {
+        res.end('<p>' + reason + '</p>')
+    })
 })
 
 home._path = ''
