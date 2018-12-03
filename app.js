@@ -7,9 +7,10 @@ const port = process.env.PORT || 8888
 const app = express()
 nunjucks.configure('views', {
     autoescape: true,
-    express: app
+    express: app,
+    noCache: false
 })
-
+moment.format
 
 // Traverse 'routes' directory, execute require & app.use
 function load_routes(dir) {
