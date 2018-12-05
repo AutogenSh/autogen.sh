@@ -1,61 +1,68 @@
-const express = require('express')
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
-const nunjucks = require('nunjucks')
-const moment = require("moment")
-const port = process.env.PORT || 8888
+/*
+ *
+ *
+ */
+Application = function () {
+    this.expresscls = require('express');
+    this.express = this.expresscls();
+    this.bodyParser = require('body-parser');
+    this.cookieParser = require('cookie-parser');
+    this.moment = require("moment");
+    this.config = require('./config/config')
+    this.port = process.env.PORT || 8888;
 
+    this.init = function () {
+        this.config.init(this.express)
 
-const app = express()
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app,
-    noCache: false
-})
-moment.format
+        this.express.use(this.bodyParser.urlencoded({ extended: true }));
+        this.express.use(this.cookieParser())
+        this.express.use(this.expresscls.static(this.config.static_dir))
+        this.express.use(this.request_filter)
+        // this.express.use(this.login_filter)
+        this.regist('controller')
+    }
 
-// Traverse 'routes' directory, execute require & app.use
-function load_routes(dir) {
-    const fs = require('fs')
-    fs.readdir(dir, function (err, files) {
-        if (err) {
-            console.log(err)
-            return false
-        }
-        files.forEach(function (name) { 
-            if (name.endsWith('\.js')) {
-                route = name.replace('\.js', '')
-                js = ('{route}=require("./{dir}/{route}");' +
-                    'app.use({route}._path, {route})')
-                    .replace(/{route}/g, route)
-                    .replace(/{dir}/g, dir)
-                eval(js)
-            }
+    this.run = function () {
+        var server = this.express.listen(this.port, function () {
+            var host = server.address().address;
+            var port = server.address().port;
+            console.log('listen at http://%s:%s', host, port);
         })
-    })
+    }
+
+    this.regist = function (dir) {
+        var fs = require('fs')
+        fs.readdir(dir, function (err, files) {
+            if (err) {
+                console.log(err)
+                return false
+            }
+            files.forEach(function (name) {
+                if (name.endsWith('\.js')) {
+                    ctrl = name.replace('\.js', '')
+                    eval(('{ctrl}=require("./{dir}/{ctrl}");' +
+                        '{ctrl}.regist();' +
+                        'app.express.use({ctrl}.path, {ctrl}.router);')
+                        .replace(/{ctrl}/g, ctrl)
+                        .replace(/{dir}/g, dir))
+                }
+            })
+        })
+    }
+
+    this.request_filter = function (req, res, next) {
+        res.tpldict = {}
+        res.tpldict.aaa = 'hello!'
+        console.log('%s host[%s] url[%s]', app.moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.hostname, req.url)
+        next()
+    }
+
+    this.login_filter = function (req, res, next) {
+        console.log(app.moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu')
+        next()
+    }
 }
 
-request_filter = function (req, res, next) {
-    console.log('%s url[%s]', moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.url)
-    next()
-}
-
-// login_filter = function (req, res, next) {
-//     console.log(moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu')
-//     next()
-// }
-
-app.use(bodyParser.urlencoded({
-    extended:true
-}));
-app.use(cookieParser())
-app.use(express.static(__dirname + '/public'))
-app.use(request_filter)
-// app.use(login_filter)
-load_routes('routes')
-
-const server = app.listen(port, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-    console.log('listen at http://%s:%s', host, port);
-})
+var app = new Application()
+app.init()
+app.run() 

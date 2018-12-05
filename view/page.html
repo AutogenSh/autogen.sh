@@ -1,6 +1,6 @@
 {% extends './layouts/master.html' %}
 
-{% block title %}Autogen's Lab / 服务端开发{% endblock %}
+{% block title %}{{article.title}} - Autogen's Lab{% endblock %}
 
 {% block css %}
 <link rel="stylesheet" href="/prettify/css/tomorrow-night-eighties.min.css" />
@@ -25,54 +25,7 @@
         width: 2.5em;
     }
     
-    {% if navex === 'true' %}
-    .layui-side.layui-bg-black {
-        width: 150px;
-    }
-    .layui-nav.layui-nav-tree {
-        width: 150px;
-    }
-    .layui-body {
-        left: 150px;
-    }
-    .layui-footer {
-        left: 150px;
-    }
-    .layui-nav .layui-nav-item a {
-        padding: 0 20px;
-        text-align: initial;
-    }
-    .layui-nav-item span {
-        display: initial;
-    }
-    {% else %}
-    .layui-side.layui-bg-black {
-        width: 50px;
-    }
-    .layui-nav.layui-nav-tree {
-        width: 50px;
-    }
-    .layui-body {
-        left: 50px;
-    }
-    .layui-footer {
-        left: 50px;
-    }
-    .layui-nav .layui-nav-item a {
-        padding: 0 0;
-        text-align: center;
-    }
-    .layui-nav-item span {
-        display: none;
-    }
-    {% endif %}
 </style>
-{% endblock %}
-
-{% block menu %}
-{% for item in menus %}
-<li class="layui-nav-item"><a href=""><i class="layui-icon {{item.logo}}"></i><span>{{item.name}}</span></a></li>
-{% endfor %}
 {% endblock %}
 
 {% block content %}
