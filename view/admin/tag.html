@@ -16,27 +16,28 @@
 {% block content %}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><i class="layui-icon layui-icon-about"></i><span>联系我</span></div>
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>标签管理</span></div>
         <div class="layui-card-body">
             <!--   -->
 
 
-
             <table class="layui-hide" id="test" lay-filter="test"></table>
 
-            <script type="text/html" id="toolbarDemo">
+            <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="add">新增标签</button>
+                {#
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
                 <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
                 <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+                #}
             </div>
             </script>
 
-            <script type="text/html" id="barDemo">
+            <script type="text/html" id="editbar">
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
             </script>
-
 
 
 
@@ -48,39 +49,52 @@
 
 {% block javascript %}
 <script>
-    layui.use('table', function () {
+    layui.use(['table', 'jquery'], function () {
         var table = layui.table;
+        var $ = layui.$;
 
         table.render({
             elem: '#test'
-            , url: '/demo1.json'
-            , toolbar: '#toolbarDemo'
-            , title: '用户数据表'
+            , url: '/admin/tag/data'
+            , toolbar: '#toolbar'
+            , title: '标签表'
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
-                , { field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true }
-                , { field: 'username', title: '用户名', width: 120, edit: 'text' }
-                , {
-                    field: 'email', title: '邮箱', width: 150, edit: 'text', templet: function (res) {
-                        return '<em>' + res.email + '</em>'
-                    }
-                }
-                , { field: 'sex', title: '性别', width: 80, edit: 'text', sort: true }
-                , { field: 'city', title: '城市', width: 100 }
-                , { field: 'sign', title: '签名' }
-                , { field: 'experience', title: '积分', width: 80, sort: true }
-                , { field: 'ip', title: 'IP', width: 120 }
-                , { field: 'logins', title: '登入次数', width: 100, sort: true }
-                , { field: 'joinTime', title: '加入时间', width: 120 }
-                , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                , { field: 'id', title: 'ID', width: 80, sort: true }
+                , { field: 'name', title: '标签', width: 120, sort: true }
+                , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 150 }
             ]]
-            , page: true
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 5 页
+                , groups: 10 //只显示 1 个连续页码
+                , prev: '上一页'
+                , next: '下一页'
+            }
         });
 
         //头工具栏事件
         table.on('toolbar(test)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
+                case 'add':
+                layer.prompt({
+                    formType: 0
+                    ,title: '添加标签'
+                    , value: ''
+                }, function (value, index) {
+                    $.post(
+                        '/admin/tag/add',
+                        { name: value },
+                        function (res) {
+                            if (res.code == 0) {
+                                window.location.reload()
+                            } else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                });
+                    break;
                 case 'getCheckData':
                     var data = checkStatus.data;
                     layer.alert(JSON.stringify(data));
@@ -98,21 +112,40 @@
         //监听行工具事件
         table.on('tool(test)', function (obj) {
             var data = obj.data;
-            //console.log(obj)
             if (obj.event === 'del') {
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                layer.confirm('确定删除[' + data.name + ']吗？', function (index) {
+                    $.post(
+                        '/admin/tag/del',
+                        { id: data.id },
+                        function (res) {
+                            if (res.code == 0) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.msg(res.msg)
+                            }
+                        })
+
                 });
             } else if (obj.event === 'edit') {
                 layer.prompt({
-                    formType: 2
-                    , value: data.email
+                    formType: 0
+                    , title: '修改标签'
+                    , value: data.name
                 }, function (value, index) {
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
+                    $.post(
+                        '/admin/tag/update',
+                        { id: data.id, name: value },
+                        function (res) {
+                            if (res.code == 0) {
+                                obj.update({
+                                    name: value
+                                });
+                                layer.close(index);
+                            } else {
+                                layer.msg(res.msg)
+                            }
+                        })
                 });
             }
         });

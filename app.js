@@ -1,21 +1,24 @@
 /*
  *
  *
- */
+ */ 
 Application = function () {
     this.expresscls = require('express');
+    this.path = require('path')
     this.express = this.expresscls();
     this.bodyParser = require('body-parser');
     this.cookieParser = require('cookie-parser');
+    this.session = require('express-session')
     this.moment = require("moment");
     this.config = require('./config/config')
     this.port = process.env.PORT || 8888;
 
     this.init = function () {
         this.config.init(this.express)
-
+        this.express.use(this.bodyParser.json())
         this.express.use(this.bodyParser.urlencoded({ extended: true }));
-        this.express.use(this.cookieParser())
+        this.express.use(this.cookieParser('autogen'));
+        // this.express.use(this.session({ secret: 'autogen'}));
         this.express.use(this.expresscls.static(this.config.static_dir))
         this.express.use(this.request_filter)
         // this.express.use(this.login_filter)
@@ -38,12 +41,12 @@ Application = function () {
                 return false
             }
             files.forEach(function (name) {
-                if (name.endsWith('\.js')) {
-                    ctrl = name.replace('\.js', '')
-                    eval(('{ctrl}=require("./{dir}/{ctrl}");' +
-                        '{ctrl}.regist();' +
-                        'app.express.use({ctrl}.path, {ctrl}.router);')
-                        .replace(/{ctrl}/g, ctrl)
+                if (app.path.extname(name) == '.js') {
+                    cls = app.path.basename(name, '.js')
+                    eval(('{cls}=require("./{dir}/{cls}");' +
+                        '{cls}.regist();' +
+                        'app.express.use({cls}.path, {cls}.router);')
+                        .replace(/{cls}/g, cls)
                         .replace(/{dir}/g, dir))
                 }
             })

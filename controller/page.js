@@ -12,9 +12,9 @@ Page = function() {
             var param = {}
             param.navex = (req.cookies.navex == null)? 'true' : req.cookies.navex
             param.id = req.params.id
-            page.service.load_menu(param)
-                .then(page.service.load_article_detail)
-                .then(page.service.load_markdown)
+            page.service.get_menu_item(param)
+                .then(page.service.get_article_detail)
+                .then(page.service.get_markdown)
                 .then(function (param) {
                     res.render('page.html', param)
                 })

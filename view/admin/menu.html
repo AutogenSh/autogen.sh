@@ -1,0 +1,190 @@
+{% extends '../layouts/master.html' %}
+
+{% block title %}菜单管理 - Autogen's Lab{% endblock %}
+
+{% block css %}
+<style>
+    .layui-card span {
+    margin-left: 8px;
+}
+.layui-icon {
+    margin-bottom: -3px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>菜单管理</span></div>
+        <div class="layui-card-body">
+            <!--   -->
+
+
+            <table class="layui-hide" id="test" lay-filter="test"></table>
+
+            <script type="text/html" id="toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="add">新增菜单项</button>
+            </div>
+            </script>
+
+            <script type="text/html" id="editbar">
+                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </script>
+
+
+            <!--   -->
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="menu_add">
+<div class="layui-row">
+    <div class="layui-col-md10">
+        <form class="layui-form" id="form" action="">
+            <input type="hidden" id="id" name="id">
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜单条目名</label>
+                <div class="layui-input-block">
+                    <input type="text" id="name" name="name" lay-verify="name" autocomplete="false" placeholder="请输入菜单条目名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序</label>
+                <div class="layui-input-block">
+                    <input type="text" id="order" name="order" lay-verify="order" autocomplete="false" placeholder="请输入排序" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">访问权限</label>
+                <div class="layui-input-block">
+                    <input type="text" id="access" name="access" lay-verify="access" autocomplete="false" placeholder="请输入权限代码" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图标</label>
+                <div class="layui-input-block">
+                    <input type="text" id="logo" name="logo" lay-verify="logo" autocomplete="false" placeholder="请输入图标名" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">链接</label>
+                <div class="layui-input-block">
+                    <input type="text" id="url" name="url" lay-verify="url" autocomplete="false" placeholder="请输入链接" class="layui-input">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</script>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    layui.use(['table', 'jquery'], function () {
+        var table = layui.table;
+        var $ = layui.$;
+
+        table.render({
+            elem: '#test'
+            , url: '/admin/menu/data'
+            , toolbar: '#toolbar'
+            , title: '菜单条目表'
+            , cols: [[
+                { type: 'checkbox', fixed: 'left' }
+                , { field: 'id', title: 'ID', width: 80, sort: true }
+                , { field: 'name', title: '菜单条目名', width: 180, sort: true }
+                , { field: 'order', title: '顺序', width: 80, sort: true }
+                , { field: 'access', title: '访问权限', width: 150, sort: true }
+                , { field: 'logo', title: '图标', width: 150, sort: true }
+                , { field: 'url', title: '链接', width: 180, sort: true }
+                , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 150 }
+            ]]
+            , page: {
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                , curr: 1
+                , groups: 10
+                , prev: '上一页'
+                , next: '下一页'
+            }
+        });
+
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 1,
+                        title: '添加菜单条目',
+                        content: $('#menu_add').html(),
+                        skin: 'layui-layer-prompt',
+                        area: ['500px', '400px'],
+                        btn: ['确定', '取消'],
+                        yes: function () {
+                            $.post(
+                                '/admin/menu/add',
+                                $('#form').serialize(),
+                                function (res) {
+                                    if (res.code == 0) {
+                                        window.location.reload()
+                                    } else {
+                                        layer.msg(res.msg, { shift: 6 })
+                                    }
+                                })
+                        }
+                    })
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的要删除吗', function (index) {
+                    $.post(
+                        '/admin/menu/del',
+                        { id: data.id },
+                        function (res) {
+                            if (res.code == 0) {
+                                obj.del();
+                                layer.close(index);
+                            } else {
+                                layer.msg(res.msg, { shift: 6 })
+                            }
+                        })
+
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 1,
+                    title: '修改菜单条目',
+                    content: $('#menu_add').html(),
+                    skin: 'layui-layer-prompt',
+                    area: ['500px', '400px'],
+                    btn: ['确定', '取消'],
+                    yes: function () {
+                        $.post(
+                            '/admin/menu/update',
+                            $('#form').serialize(),
+                            function (res) {
+                                if (res.code == 0) {
+                                    window.location.reload()
+                                } else {
+                                    layer.msg(res.msg, { shift: 6 })
+                                }
+                            })
+                    }
+                })
+                $('#id').val(data.id)
+                $('#name').val(data.name)
+                $('#order').val(data.order)
+                $('#access').val(data.access)
+                $('#logo').val(data.logo)
+                $('#url').val(data.url)
+            }
+        });
+    });
+</script>
+{% endblock %}

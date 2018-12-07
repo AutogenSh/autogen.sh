@@ -34,17 +34,19 @@
         var laypage = layui.laypage;
         var $ = layui.$;
         laypage.render({
+            layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'],
             elem: 'page',
             count: '{{total}}',
             limit: '{{limit}}',
-            curr: '{{pageid}}',
+            curr: '{{page}}',
+            groups: 10,
             jump: function (obj, first) {
                 if (!first) {
                     form = $("<form></form>")
                     form.attr('action', '/')
                     form.attr('method', 'post')
                     form.css('display', 'none')
-                    input = $('<input type="hidden" name="pageid">')
+                    input = $('<input type="hidden" name="page">')
                     input.attr('value', obj.curr)
                     form.append(input)
                     $('body').append(form)
