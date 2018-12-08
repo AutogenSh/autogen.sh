@@ -62,41 +62,6 @@ Service = function () {
         })
     }
 
-    this.get_article_count = function (param) {
-        return new Promise(function (resolve, reject) {
-            sql = 'select count(1) as total from `t_article`'
-            service.query(sql, [], function (err, rows) {
-                if (err) {
-                    reject(err)
-                } else {
-                    param.total = rows[0].total
-                    resolve(param)
-                }
-            })
-        })
-    }
-
-    this.get_article_list = function (param) {
-        return new Promise(function (resolve, reject) {
-            var low = (param.page - 1) * param.limit
-            var high = low + param.limit
-            high = (high <= param.total) ? high : param.total
-            sql = 'select `id`, `title`, `summary`, `create_by`, `create_at`, `modify_at` ' +
-                'from `t_article` where `status`=? order by `create_at` desc limit ?,?'
-            // console.log('#home ==> limit[%d] page[%d]\nsql[%s]', param.limit, param.page, sql)
-            service.query(sql, [1, low, high], function (err, articles) {
-                if (err) {
-                    reject(err)
-                } else {
-                    param.articles = articles
-                    // console.log('##### get_article_list page=', param)
-                    resolve(param)
-                }
-            })
-        })
-    }
-
-
     //------------------------------
     
     
@@ -127,7 +92,6 @@ Service = function () {
                     reject(err)
                 } else {
                     param.tags = tags
-                    // console.log('##### get_article_list page=', param)
                     resolve(param)
                 }
             })
@@ -280,7 +244,6 @@ Service = function () {
                     reject(err)
                 } else {
                     param.menus = menus
-                    // console.log('##### get_article_list page=', param)
                     resolve(param)
                 }
             })
@@ -327,6 +290,282 @@ Service = function () {
             })
         })
     }
+    
+
+    //------------------------------
+    
+    
+    this.get_role_count = function (param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'select count(1) as total from `t_role` where status=0'
+            service.query(sql, [], function (err, rows) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.total = rows[0].total
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.get_role_list = function (param) {
+        return new Promise(function (resolve, reject) {
+            var low = (param.page - 1) * param.limit
+            var high = low + param.limit
+            high = (high <= param.total) ? high : param.total
+            sql = 'select `id`, `name` ' +
+                'from `t_role` where `status`=0 order by `id` desc limit ?,?'
+            console.log('sql: %s, low: %d, high: %d', sql, low, high)
+            service.query(sql, [low, high], function (err, roles) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.roles = roles
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.update_role = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_role set name=? where id=?'
+            // console.log('#home ==> id[%d] name[%s]\nsql[%s]', param.id, param.name, sql)
+            service.query(sql, [param.name, param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.insert_role = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'insert into t_role(status, name) values(0, ?)'
+            service.query(sql, [param.name], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.del_role = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_role set status=1 where id=?'
+            service.query(sql, [param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
+
+    //------------------------------
+    
+    
+    this.get_article_count = function (param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'select count(1) as total from `t_article`'
+            service.query(sql, [], function (err, rows) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.total = rows[0].total
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.get_article_list = function (param) {
+        return new Promise(function (resolve, reject) {
+            var low = (param.page - 1) * param.limit
+            var high = low + param.limit
+            high = (high <= param.total) ? high : param.total
+            sql = 'select `id`, `title`, `summary`, `status`, `create_by`, ' + 
+                'date_format(`create_at`, "%Y-%c-%e %l:%i:%s") as create_at, date_format(`modify_at`, "%Y-%c-%e %l:%i:%s") as modify_at ' +
+                'from `t_article` order by `id` desc limit ?,?'
+            // console.log('#home ==> limit[%d] page[%d]\nsql[%s]', param.limit, param.page, sql, low, high)
+            service.query(sql, [low, high], function (err, articles) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.articles = articles
+                    // console.log('##### get_article_list page=', param)
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.update_article = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_article set `title`=?, `summary`=?, `status`=? where id=?'
+            console.log('sql: %s, title: %s, summary: %s, status: %d, id: %d\n', sql, param.title, param.summary, param.status, param.id)
+            service.query(sql, [param.title, param.summary, param.status, param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.insert_article = function(param) {
+        return new Promise(function (resolve, rejecct) {
+            sql = 'insert into t_article(`status`, `title`, `summary`,`create_by`) values(?, ?, ?, 10000)'
+            service.query(sql, [param.status, param.title, param.summary], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.id = result.insertId
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.del_article = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_article set status=1 where id=?'
+            service.query(sql, [param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
+    this.get_article_body = function (param) {
+        return new Promise(function (resolve, reject) {
+            var path = service.config.upload_dir + '/' + param.id + '.md'
+            service.fs.readFile(path, 'utf8', function (err, data) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.data = data
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
+    this.update_article_body = function (param) {
+        return new Promise(function (resolve, reject) {
+            var path = service.config.upload_dir + '/' + param.id + '.md'
+            service.fs.writeFile(path, param.body, 'utf8', function(err) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
+
+    //------------------------------
+    
+    this.get_allroles = function (param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'select `id`, `name` ' +
+                'from `t_role` where `status`=0 order by `id` desc'
+            service.query(sql, [], function (err, roles) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.roles = roles
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
+    this.get_user_count = function (param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'select count(1) as total from `t_user` where status=0'
+            service.query(sql, [], function (err, rows) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.total = rows[0].total
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.get_user_list = function (param) {
+        return new Promise(function (resolve, reject) {
+            var low = (param.page - 1) * param.limit
+            var high = low + param.limit
+            high = (high <= param.total) ? high : param.total
+            sql = 'select `id`, `name`, `role`, `status` ' +
+                'from `t_user` where status=0 order by `id` desc limit ?,?'
+            // console.log('#home ==> limit[%d] page[%d]\nsql[%s]', param.limit, param.page, sql, low, high)
+            service.query(sql, [low, high], function (err, users) {
+                if (err) {
+                    reject(err)
+                } else {
+                    param.users = users
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.update_user = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_user set name=?, role=? where id=?'
+            // console.log('#home ==> id[%d] name[%s]\nsql[%s]', param.id, param.name, sql)
+            service.query(sql, [param.name, param.role, param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.insert_user = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'insert into t_user(status, name, role) values(0, ?, ?)'
+            service.query(sql, [param.name, param.role], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+
+    this.del_user = function(param) {
+        return new Promise(function (resolve, reject) {
+            sql = 'update t_user set status=1 where id=?'
+            service.query(sql, [param.id], function (err, result) {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(param)
+                }
+            })
+        })
+    }
+    
 
 }
 

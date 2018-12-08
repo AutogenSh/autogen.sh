@@ -1,6 +1,6 @@
 {% extends '../layouts/master.html' %}
 
-{% block title %}权限管理 - Autogen's Lab{% endblock %}
+{% block title %}用户管理 - Autogen's Lab{% endblock %}
 
 {% block css %}
 <style>
@@ -16,16 +16,21 @@
 {% block content %}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>权限管理</span></div>
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>用户管理</span></div>
         <div class="layui-card-body">
             <!--   -->
 
 
-            <table class="layui-hide" id="test" lay-filter="test"></table>
+            <table class="layui-hide" id="user-table" lay-filter="user-table"></table>
 
             <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-sm" lay-event="add">新增权限</button>
+                <button class="layui-btn layui-btn-sm" lay-event="add">新增用户</button>
+                {#
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+                <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+                #}
             </div>
             </script>
 
@@ -41,71 +46,87 @@
     </div>
 </div>
 
-<script type="text/html" id="access_add">
-<div class="layui-row">
-    <div class="layui-col-md10">
-        <form class="layui-form" id="form" action="">
-            <input type="hidden" id="id" name="id">
-            <div class="layui-form-item">
-                <label class="layui-form-label">权限代码</label>
-                <div class="layui-input-block">
-                    <input type="text" require id="access" name="access" lay-verify="access" autocomplete="false" placeholder="请输入权限代码" class="layui-input">
+<script type="text/html" id="user_add">
+    <div class="layui-row">
+        <div class="layui-col-md10">
+            <form class="layui-form" id="form" action="">
+                <input type="hidden" id="id" name="id">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input require type="text" id="name" name="name" lay-verify="name" autocomplete="false" placeholder="请输入角色名" class="layui-input">
+                    </div>
                 </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">权限名</label>
-                <div class="layui-input-block">
-                    <input type="text" require id="name" name="name" lay-verify="name" autocomplete="false" placeholder="请输入权限名" class="layui-input">
+                
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                    <select id="role" name="role" lay-filter="role" lay-verify="required">
+                        <option value=""></option>
+                        {% for role in roles %}
+                        <option value="{{role.id}}">{{role.name}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 </script>
+
 {% endblock %}
 
 {% block javascript %}
 <script>
-    layui.use(['table', 'jquery'], function () {
+    layui.use(['table', 'jquery', 'form', 'element'], function () {
         var table = layui.table;
         var $ = layui.$;
+        var form = layui.form;
 
         table.render({
-            elem: '#test'
-            , url: '/admin/access/data'
+            elem: '#user-table'
+            , url: '/admin/user/data'
             , toolbar: '#toolbar'
             , loading: true
-            , title: '权限表'
+            , title: '用户表'
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
                 , { field: 'id', title: 'ID', width: 80, sort: true }
-                , { field: 'access', title: '权限', width: 200, sort: true }
-                , { field: 'name', title: '权限名', width: 120, sort: true }
+                , { field: 'name', title: '用户名', width: 120, sort: true }
+                , { field: 'role', title: '角色', width: 120, sort: true, templet: function (d) {
+                        switch (d.role) {
+                            {% for role in roles %}
+                            case {{role.id}}: return '{{role.name}}';
+                            {% endfor %}
+                        }
+                    }
+                }
                 , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 120 }
             ]]
-            , page: {
-                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
-                , curr: 1
-                , groups: 10
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , curr: 1 //设定初始在第 5 页
+                , groups: 10 //只显示 1 个连续页码
                 , prev: '上一页'
                 , next: '下一页'
             }
         });
 
-        table.on('toolbar(test)', function (obj) {
+        //头工具栏事件
+        table.on('toolbar(user-table)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'add':
                     layer.open({
                         type: 1,
-                        title: '添加权限',
-                        content: $('#access_add').html(),
+                        title: '添加用户',
+                        content: $('#user_add').html(),
                         skin: 'layui-layer-prompt',
                         area: ['500px', '300px'],
                         btn: ['确定', '取消'],
                         yes: function () {
                             $.post(
-                                '/admin/access/add',
+                                '/admin/user/add',
                                 $('#form').serialize(),
                                 function (res) {
                                     if (res.code == 0) {
@@ -116,23 +137,24 @@
                                 })
                         }
                     })
+                    form.render('select')
             };
         });
 
         //监听行工具事件
-        table.on('tool(test)', function (obj) {
+        table.on('tool(user-table)', function (obj) {
             var data = obj.data;
             if (obj.event === 'del') {
-                layer.confirm('真的要删除吗', function (index) {
+                layer.confirm('确定删除[' + data.name + ']吗？', function (index) {
                     $.post(
-                        '/admin/access/del',
+                        '/admin/user/del',
                         { id: data.id },
                         function (res) {
                             if (res.code == 0) {
                                 obj.del();
                                 layer.close(index);
                             } else {
-                                layer.msg(res.msg, { shift: 6 })
+                                layer.msg(res.msg)
                             }
                         })
 
@@ -140,14 +162,14 @@
             } else if (obj.event === 'edit') {
                 layer.open({
                     type: 1,
-                    title: '修改权限',
-                    content: $('#access_add').html(),
+                    title: '修改用户',
+                    content: $('#user_add').html(),
                     skin: 'layui-layer-prompt',
                     area: ['500px', '300px'],
                     btn: ['确定', '取消'],
                     yes: function () {
                         $.post(
-                            '/admin/access/update',
+                            '/admin/user/update',
                             $('#form').serialize(),
                             function (res) {
                                 if (res.code == 0) {
@@ -159,8 +181,9 @@
                     }
                 })
                 $('#id').val(data.id)
-                $('#access').val(data.access)
                 $('#name').val(data.name)
+                $("#role").val(data.role)
+                    form.render('select')
             }
         });
     });

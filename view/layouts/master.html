@@ -12,16 +12,16 @@
     <style>
         {% if navex === 'true' %}
         .layui-side.layui-bg-black {
-            width: 150px;
+            width: 200px;
         }
         .layui-nav.layui-nav-tree {
-            width: 150px;
+            width: 200px;
         }
         .layui-body {
-            left: 150px;
+            left: 200px;
         }
         .layui-footer {
-            left: 150px;
+            left: 200px;
         }
         .layui-nav .layui-nav-item a {
             padding: 0 20px;
@@ -73,6 +73,18 @@
             background-color: #F2F2F2;
             white-space: nowrap;
             overflow: auto;
+        }
+
+        .layui-laypage a, .layui-laypage span, .layui-laypage button, .layui-laypage select, .layui-laypage input {
+            color: #666;
+        }
+
+        .layui-laypage-count, .layui-laypage-skip {
+            color: #999 !important;
+        }
+
+        .layui-laypage .layui-laypage-count, .layui-laypage .layui-laypage-skip {
+            background-color: transparent;
         }
 
         .layui-footer a {
@@ -156,13 +168,13 @@
 
 </html>
 
-<script src="/layui/layui.js"></script>
+<script src="/layui/layui.js" charset="utf-8"></script>
 <script>
     function expand($) {
-        $('.layui-side.layui-bg-black').width(150); //设置宽度
-        $('.layui-nav.layui-nav-tree').width(150); //设置宽度
-        $('.layui-body').css('left', '150px');
-        $('.layui-footer').css('left', '150px');
+        $('.layui-side.layui-bg-black').width(200); //设置宽度
+        $('.layui-nav.layui-nav-tree').width(200); //设置宽度
+        $('.layui-body').css('left', '200px');
+        $('.layui-footer').css('left', '200px');
         $('.layui-nav .layui-nav-item a').css('padding', '0 20px').css('text-align', 'initial');
         $('.layui-nav-item span').each(function () {
             $(this).show()

@@ -1,6 +1,6 @@
 {% extends '../layouts/master.html' %}
 
-{% block title %}权限管理 - Autogen's Lab{% endblock %}
+{% block title %}角色管理 - Autogen's Lab{% endblock %}
 
 {% block css %}
 <style>
@@ -16,7 +16,7 @@
 {% block content %}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>权限管理</span></div>
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>角色管理</span></div>
         <div class="layui-card-body">
             <!--   -->
 
@@ -25,7 +25,7 @@
 
             <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-sm" lay-event="add">新增权限</button>
+                <button class="layui-btn layui-btn-sm" lay-event="add">新增角色</button>
             </div>
             </script>
 
@@ -41,21 +41,15 @@
     </div>
 </div>
 
-<script type="text/html" id="access_add">
+<script type="text/html" id="role_add">
 <div class="layui-row">
     <div class="layui-col-md10">
         <form class="layui-form" id="form" action="">
             <input type="hidden" id="id" name="id">
             <div class="layui-form-item">
-                <label class="layui-form-label">权限代码</label>
+                <label class="layui-form-label">角色名</label>
                 <div class="layui-input-block">
-                    <input type="text" require id="access" name="access" lay-verify="access" autocomplete="false" placeholder="请输入权限代码" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">权限名</label>
-                <div class="layui-input-block">
-                    <input type="text" require id="name" name="name" lay-verify="name" autocomplete="false" placeholder="请输入权限名" class="layui-input">
+                    <input require type="text" id="name" name="name" lay-verify="name" autocomplete="false" placeholder="请输入角色名" class="layui-input">
                 </div>
             </div>
         </form>
@@ -72,15 +66,14 @@
 
         table.render({
             elem: '#test'
-            , url: '/admin/access/data'
+            , url: '/admin/role/data'
             , toolbar: '#toolbar'
             , loading: true
-            , title: '权限表'
+            , title: '角色表'
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
                 , { field: 'id', title: 'ID', width: 80, sort: true }
-                , { field: 'access', title: '权限', width: 200, sort: true }
-                , { field: 'name', title: '权限名', width: 120, sort: true }
+                , { field: 'name', title: '角色名', width: 120, sort: true }
                 , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 120 }
             ]]
             , page: {
@@ -98,14 +91,14 @@
                 case 'add':
                     layer.open({
                         type: 1,
-                        title: '添加权限',
-                        content: $('#access_add').html(),
+                        title: '添加角色',
+                        content: $('#role_add').html(),
                         skin: 'layui-layer-prompt',
                         area: ['500px', '300px'],
                         btn: ['确定', '取消'],
                         yes: function () {
                             $.post(
-                                '/admin/access/add',
+                                '/admin/role/add',
                                 $('#form').serialize(),
                                 function (res) {
                                     if (res.code == 0) {
@@ -125,7 +118,7 @@
             if (obj.event === 'del') {
                 layer.confirm('真的要删除吗', function (index) {
                     $.post(
-                        '/admin/access/del',
+                        '/admin/role/del',
                         { id: data.id },
                         function (res) {
                             if (res.code == 0) {
@@ -140,14 +133,14 @@
             } else if (obj.event === 'edit') {
                 layer.open({
                     type: 1,
-                    title: '修改权限',
-                    content: $('#access_add').html(),
+                    title: '修改角色',
+                    content: $('#role_add').html(),
                     skin: 'layui-layer-prompt',
                     area: ['500px', '300px'],
                     btn: ['确定', '取消'],
                     yes: function () {
                         $.post(
-                            '/admin/access/update',
+                            '/admin/role/update',
                             $('#form').serialize(),
                             function (res) {
                                 if (res.code == 0) {
@@ -159,7 +152,6 @@
                     }
                 })
                 $('#id').val(data.id)
-                $('#access').val(data.access)
                 $('#name').val(data.name)
             }
         });

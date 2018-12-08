@@ -317,6 +317,352 @@ Admin = function () {
 
                 })
         })
+
+
+        // ==========================================================
+
+        this.router.get('/role', function (req, res) {
+            var param = {}
+            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
+            param.page = admin.convert.int(req.query.page, 1)
+            param.limit = admin.convert.int(req.query.limit, 10)
+            // todo for test
+            admin.print(res)
+            admin.service.get_menu_item(param)
+                .then(function (param) {
+                    res.render('admin/role.html', param)
+                })
+                .catch(function (reason) {
+                    res.end('<p>' + reason + '</p>')
+                })
+        })
+
+        this.router.get('/role/data', function (req, res) {
+            var param = {}
+            param.page = admin.convert.int(req.query.page, 1)
+            param.limit = admin.convert.int(req.query.limit, 10)
+            admin.service.get_role_count(param)
+                .then(admin.service.get_role_list)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = 'success'
+                    json.count = param.total
+                    json.data = param.roles
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = reason
+                    res.json(json)
+                })
+        })
+
+        this.router.post('/role/update', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            param.name = req.body.name.trim()
+            admin.service.update_role(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '修改成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '修改失败，请稍后再试：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/role/add', function (req, res) {
+            var param = {}
+            param.name = req.body.name.trim()
+            admin.service.insert_role(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '添加成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '添加失败，请确认标签是否有重复：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/role/del', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            admin.service.del_role(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '删除成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '删除失败，请稍后再试：' + reason
+                    res.json(json)
+
+                })
+        })
+
+
+        // ==========================================================
+
+        this.router.get('/article', function (req, res) {
+            var param = {}
+            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
+            param.page = admin.convert.int(req.query.page, 1)
+            param.limit = admin.convert.int(req.query.limit, 10)
+            // todo for test
+            admin.print(res)
+            admin.service.get_menu_item(param)
+                .then(function (param) {
+                    res.render('admin/article.html', param)
+                })
+                .catch(function (reason) {
+                    res.end('<p>' + reason + '</p>')
+                })
+        })
+
+        this.router.get('/article/data', function (req, res) {
+            var param = {}
+            param.page = admin.convert.int(req.query.page, 1)
+            param.limit = admin.convert.int(req.query.limit, 10)
+            admin.service.get_article_count(param)
+                .then(admin.service.get_article_list)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = 'success'
+                    json.count = param.total
+                    json.data = param.articles
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = reason
+                    res.json(json)
+                })
+        })
+
+        this.router.post('/article/update', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            param.title = req.body.title.trim()
+            param.summary = req.body.summary.trim()
+            param.status = req.body.status.trim()
+            param.body = req.body.body.trim()
+            admin.service.update_article(param)
+                .then(admin.service.update_article_body)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '修改成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '修改失败，请稍后再试：' + reason
+                    res.json(json)
+                })
+        })
+
+        this.router.post('/article/add', function (req, res) {
+            var param = {}
+            param.title = req.body.title.trim()
+            param.summary = req.body.summary.trim()
+            param.status = req.body.status.trim()
+            param.body = req.body.body.trim()
+            admin.service.insert_article(param)
+                .then(admin.service.update_article_body)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '添加成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '添加失败，请确认标签是否有重复：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/article/del', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            admin.service.del_article(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '删除成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '删除失败，请稍后再试：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/article/body/update', function (req, res) {
+            var param = {}
+            param.id = admin.convert.int(req.body.id, 0)
+            param.body = req.body.body
+            admin.service.update_article_body(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '操作成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '操作失败：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.get('/article/body/:id', function (req, res) {
+            var param = {}
+            param.id = admin.convert.int(req.params.id, 0)
+            admin.service.get_article_body(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '操作成功'
+                    json.data = param.data
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '操作失败：' + reason
+                    res.json(json)
+
+                })
+        })
+        
+        // ==========================================================
+
+        this.router.get('/user', function (req, res) {
+            var param = {}
+            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
+            // todo for test
+            admin.print(res)
+            admin.service.get_menu_item(param)
+                .then(admin.service.get_allroles)
+                .then(function (param) {
+                    res.render('admin/user.html', param)
+                })
+                .catch(function (reason) {
+                    res.end('<p>' + reason + '</p>')
+                })
+        })
+
+        this.router.get('/user/data', function (req, res) {
+            var param = {}
+            param.page = admin.convert.int(req.query.page, 1)
+            param.limit = admin.convert.int(req.query.limit, 10)
+            admin.service.get_user_count(param)
+                .then(admin.service.get_user_list)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = 'success'
+                    json.count = param.total
+                    json.data = param.users
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = reason
+                    res.json(json)
+                })
+        })
+
+        this.router.post('/user/update', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            param.role = admin.convert.int(req.body.role, 0)
+            param.name = req.body.name.trim()
+            admin.service.update_user(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '修改成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '修改失败，请稍后再试：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/user/add', function (req, res) {
+            var param = {}
+            param.role = admin.convert.int(req.body.role, 0)
+            param.name = req.body.name.trim()
+            admin.service.insert_user(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '添加成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '添加失败，请确认标签是否有重复：' + reason
+                    res.json(json)
+
+                })
+        })
+
+        this.router.post('/user/del', function (req, res) {
+            var param = {}
+            param.id = req.body.id
+            admin.service.del_user(param)
+                .then(function (param) {
+                    var json = {}
+                    json.code = 0
+                    json.msg = '删除成功'
+                    res.json(json)
+                })
+                .catch(function (reason) {
+                    var json = {}
+                    json.code = 1
+                    json.msg = '删除失败，请稍后再试：' + reason
+                    res.json(json)
+
+                })
+        })
+
+
     }
 }
 

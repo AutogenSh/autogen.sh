@@ -57,12 +57,13 @@
             elem: '#test'
             , url: '/admin/tag/data'
             , toolbar: '#toolbar'
+            , loading: true
             , title: '标签表'
             , cols: [[
                 { type: 'checkbox', fixed: 'left' }
                 , { field: 'id', title: 'ID', width: 80, sort: true }
                 , { field: 'name', title: '标签', width: 120, sort: true }
-                , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 150 }
+                , { fixed: 'right', title: '操作', toolbar: '#editbar', width: 120 }
             ]]
             , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
                 layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
