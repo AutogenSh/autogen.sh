@@ -2,6 +2,11 @@
  *
  *
  */ 
+var config = require('./config/config');
+var nunjucks = require('nunjucks');
+var marked = require('marked');
+var mysql = require('mysql');
+
 Application = function () {
     this.expresscls = require('express');
     this.path = require('path')
@@ -10,16 +15,20 @@ Application = function () {
     this.cookieParser = require('cookie-parser');
     this.session = require('express-session')
     this.moment = require("moment");
-    this.config = require('./config/config')
     this.port = process.env.PORT || 8888;
 
     this.init = function () {
-        this.config.init(this.express)
+        config.nunjucks.express = this.express;
+        nunjucks.configure(config.path.view, config.nunjucks)
+        marked.setOptions(config.marked)
+        config.pool = mysql.createPool(config.mysql)
+
+        // this.config.init(this.express)
         this.express.use(this.bodyParser.json())
         this.express.use(this.bodyParser.urlencoded({ extended: true }));
         this.express.use(this.cookieParser('autogen'));
         // this.express.use(this.session({ secret: 'autogen'}));
-        this.express.use(this.expresscls.static(this.config.static_dir))
+        this.express.use(this.expresscls.static(config.path.static))
         this.express.use(this.request_filter)
         // this.express.use(this.login_filter)
         this.regist('controller')
