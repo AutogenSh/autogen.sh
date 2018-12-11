@@ -9,7 +9,7 @@
 {% for item in articles %}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><a href='/p/{{item.id}}'>{{item.title}}</a></div>
+        <div class="layui-card-header"><a href="javascript:window.open('/post/{{item.id}}')">{{item.title}}</a></div>
         <div class="layui-card-body">
             摘要: {{item.summary}}<br>
             <span class="update-time">发布时间：{{item.create_at}}</span>
@@ -42,15 +42,18 @@
             groups: 10,
             jump: function (obj, first) {
                 if (!first) {
-                    form = $("<form></form>")
-                    form.attr('action', '/')
-                    form.attr('method', 'post')
-                    form.css('display', 'none')
-                    input = $('<input type="hidden" name="page">')
-                    input.attr('value', obj.curr)
-                    form.append(input)
-                    $('body').append(form)
-                    form.submit()
+                    window.location.href = '/?page=' + obj.curr;
+                    if (false) {
+                        form = $("<form></form>")
+                        form.attr('action', '/')
+                        form.attr('method', 'post')
+                        form.css('display', 'none')
+                        input = $('<input type="hidden" name="page">')
+                        input.attr('value', obj.curr)
+                        form.append(input)
+                        $('body').append(form)
+                        form.submit()
+                    }
                 }
             }
         })

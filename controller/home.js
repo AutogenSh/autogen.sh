@@ -2,59 +2,45 @@
  *
  *
  */
-Home = function () {
-    this.router = require('express').Router();
-    this.path = '';
-    this.service = require('../service/service')
-    this.convert = require('../utils/convert')
+var publish_service = require('../service/publish_service');
+var router = require('express').Router();
 
-    this.regist = function () {
+var home = (function () {
 
-        this.router.post('/', function (req, res) {
-            var param = {}
-            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
-            param.page = home.convert.int(req.body.page, 1)
-            param.limit = home.convert.int(req.body.limit, 10)
-            home.service.get_menu_item(param)
-                .then(home.service.get_article_count)
-                .then(home.service.get_article_list)
-                .then(function (param) {
-                    res.render('index.html', param)
-                })
-                .catch(function (reason) {
-                    res.end('<p>' + reason + '</p>')
-                })
-        })
+    router.all('/', function (req, res) {
+        publish_service.get_menu(req)
+            .then(publish_service.get_publish_article_count)
+            .then(publish_service.get_publish_article_list)
+            .then(function (req) {
+                res.render('index.html', req);
+            })
+            .catch(function (reason) {
+                res.end('<p>' + reason + '</p>');
+            });
+    });
 
-        this.router.get('/', function (req, res) {
-            var param = {}
-            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
-            param.page = home.convert.int(req.query.page, 1)
-            param.limit = home.convert.int(req.query.limit, 10)
-            home.service.get_menu_item(param)
-                .then(home.service.get_article_count)
-                .then(home.service.get_article_list)
-                .then(function (param) {
-                    res.render('index.html', param)
-                })
-                .catch(function (reason) {
-                    res.end('<p>' + reason + '</p>')
-                })
-        })
+    router.get('/about', function(req, res) {
+        publish_service.get_menu(req)
+            .then(function (req) {
+                res.render('about.html', req)
+            })
+            .catch(function (reason) {
+                res.end('<p>' + reason + '</p>')
+            });
+    });
 
-        this.router.get('/about', function about(req, res) {
-            var param = {}
-            param.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex
-            home.service.get_menu_item(param)
-                .then(function (param) {
-                    res.render('about.html', param)
-                })
-                .catch(function (reason) {
-                    res.end('<p>' + reason + '</p>')
-                })
-        })
-    }
-}
+    router.get('/test', function (req, res) {
+        req.test = {}
+        req.test.name = 'test'
+        req.test.val = 'test-val'
+        res.json(req.test)
+    });
 
-var home = new Home()
+    return {
+        path: '',
+        router: router
+    };
+
+})();
+
 module.exports = home

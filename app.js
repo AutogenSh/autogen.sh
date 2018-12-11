@@ -6,6 +6,7 @@ var config = require('./config/config');
 var nunjucks = require('nunjucks');
 var marked = require('marked');
 var mysql = require('mysql');
+var convert = require('./utils/convert');
 
 Application = function () {
     this.expresscls = require('express');
@@ -23,15 +24,15 @@ Application = function () {
         marked.setOptions(config.marked)
         config.pool = mysql.createPool(config.mysql)
 
-        // this.config.init(this.express)
         this.express.use(this.bodyParser.json())
         this.express.use(this.bodyParser.urlencoded({ extended: true }));
         this.express.use(this.cookieParser('autogen'));
         // this.express.use(this.session({ secret: 'autogen'}));
         this.express.use(this.expresscls.static(config.path.static))
-        this.express.use(this.request_filter)
+        this.express.use(this.before)
         // this.express.use(this.login_filter)
         this.regist('controller')
+        this.express.use(this.after)
     }
 
     this.run = function () {
@@ -52,8 +53,8 @@ Application = function () {
             files.forEach(function (name) {
                 if (app.path.extname(name) == '.js') {
                     cls = app.path.basename(name, '.js')
+                    console.log('regist controller: %s', cls)
                     eval(('{cls}=require("./{dir}/{cls}");' +
-                        '{cls}.regist();' +
                         'app.express.use({cls}.path, {cls}.router);')
                         .replace(/{cls}/g, cls)
                         .replace(/{dir}/g, dir))
@@ -62,17 +63,27 @@ Application = function () {
         })
     }
 
-    this.request_filter = function (req, res, next) {
-        res.tpldict = {}
-        res.tpldict.aaa = 'hello!'
-        console.log('%s host[%s] url[%s]', app.moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.hostname, req.url)
-        next()
-    }
+    this.before = function (req, res, next) {
+        req.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex;
+        if (req.method == 'GET') {
+            req.page = convert.int(req.query.page, 1);
+            req.limit = convert.int(req.query.limit, 3);
+        } else if (req.method == 'POST') {
+            req.page = convert.int(req.body.page, 1);
+            req.limit = convert.int(req.body.limit, 3);
+        }
+        console.log('req time[%s] method[%s] url[%s]', app.moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.method, req.url);
+        next();
+    };
+
+    this.after = function (req, res, next) {
+        next();
+    };
 
     this.login_filter = function (req, res, next) {
-        console.log(app.moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu')
-        next()
-    }
+        console.log(app.moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu');
+        next();
+    };
 }
 
 var app = new Application()
