@@ -1,91 +1,76 @@
 /*
  *
  *
- */ 
+ */
 var config = require('./config/config');
 var nunjucks = require('nunjucks');
 var marked = require('marked');
 var mysql = require('mysql');
-var convert = require('./utils/convert');
+var redis = require('redis');
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var path = require('path');
+var express = require('express');
+var filter = require('./filter/filter');
+var app = express();
 
-Application = function () {
-    this.expresscls = require('express');
-    this.path = require('path')
-    this.express = this.expresscls();
-    this.bodyParser = require('body-parser');
-    this.cookieParser = require('cookie-parser');
-    this.session = require('express-session')
-    this.moment = require("moment");
-    this.port = process.env.PORT || 8888;
+var application = (function () {
+    var port = process.env.PORT || 8888;
 
-    this.init = function () {
-        config.nunjucks.express = this.express;
-        nunjucks.configure(config.path.view, config.nunjucks)
-        marked.setOptions(config.marked)
-        config.pool = mysql.createPool(config.mysql)
+    var init = function () {
+        config.nunjucks.express = app;
+        nunjucks.configure(config.path.view, config.nunjucks);
+        marked.setOptions(config.marked);
+        config.pool = mysql.createPool(config.mysql);
+        config.cache = redis.createClient(config.redis);
 
-        this.express.use(this.bodyParser.json())
-        this.express.use(this.bodyParser.urlencoded({ extended: true }));
-        this.express.use(this.cookieParser('autogen'));
-        // this.express.use(this.session({ secret: 'autogen'}));
-        this.express.use(this.expresscls.static(config.path.static))
-        this.express.use(this.before)
-        // this.express.use(this.login_filter)
-        this.regist('controller')
-        this.express.use(this.after)
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(cookieParser('autogen-'));
+        app.use(session({
+            secret: 'autogen-',
+            cookie: config.cookie,
+            resave: true,
+            saveUninitialized: false,
+            store: new RedisStore(config.redis)
+        }));
+        app.use(express.static(config.path.static));
+        app.use(filter.before);
+        regist('controller');
+        app.use(filter.after);
     }
 
-    this.run = function () {
-        var server = this.express.listen(this.port, function () {
+    var run = function () {
+        var server = app.listen(port, function () {
             var host = server.address().address;
             var port = server.address().port;
             console.log('listen at http://%s:%s', host, port);
         })
     }
 
-    this.regist = function (dir) {
-        var fs = require('fs')
+    var regist = function (dir) {
+        var fs = require('fs');
         fs.readdir(dir, function (err, files) {
             if (err) {
-                console.log(err)
-                return false
+                console.log(err);
+                return false;
             }
             files.forEach(function (name) {
-                if (app.path.extname(name) == '.js') {
-                    cls = app.path.basename(name, '.js')
+                if (path.extname(name) == '.js') {
+                    cls = path.basename(name, '.js')
                     console.log('regist controller: %s', cls)
                     eval(('{cls}=require("./{dir}/{cls}");' +
-                        'app.express.use({cls}.path, {cls}.router);')
+                        'app.use({cls}.path, {cls}.router);')
                         .replace(/{cls}/g, cls)
-                        .replace(/{dir}/g, dir))
+                        .replace(/{dir}/g, dir));
                 }
             })
         })
     }
 
-    this.before = function (req, res, next) {
-        req.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex;
-        if (req.method == 'GET') {
-            req.page = convert.int(req.query.page, 1);
-            req.limit = convert.int(req.query.limit, 3);
-        } else if (req.method == 'POST') {
-            req.page = convert.int(req.body.page, 1);
-            req.limit = convert.int(req.body.limit, 3);
-        }
-        console.log('req time[%s] method[%s] url[%s]', app.moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.method, req.url);
-        next();
-    };
+    init();
+    run();
 
-    this.after = function (req, res, next) {
-        next();
-    };
-
-    this.login_filter = function (req, res, next) {
-        console.log(app.moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu');
-        next();
-    };
-}
-
-var app = new Application()
-app.init()
-app.run() 
+})();

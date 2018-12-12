@@ -16,7 +16,9 @@
 {% block content %}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>菜单管理</span></div>
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>菜单管理</span>
+            <span class="userinfo">管理员:&nbsp;{{session.user.name}}&nbsp;&nbsp;|&nbsp;&nbsp;<a href='/admin/logout'>退出</a></span></div>
+        </div>
         <div class="layui-card-body">
             <!--   -->
 

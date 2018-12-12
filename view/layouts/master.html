@@ -6,9 +6,9 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="/font-mfizz/font-mfizz.css" media="all">
-    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/layui/css/layui.css?t=20181212" media="all">
+    <link rel="stylesheet" href="/font-mfizz/font-mfizz.css?t=20181212" media="all">
+    <title>{%- block title -%}{%- endblock -%}</title>
     <style>
         body {
             background-color: #f2f2f2;
@@ -16,7 +16,7 @@
         blockquote {
             background-color: #fafafa;
         }
-        {% if navex === 'true' %}
+        {%- if navex === 'true' -%}
         .layui-side.layui-bg-black {
             width: 200px;
         }
@@ -30,13 +30,12 @@
             left: 200px;
         }
         .layui-nav .layui-nav-item a {
-            padding: 0 20px;
-            text-align: initial;
+            padding: 0 17px;
         }
         .layui-nav-item span {
             display: initial;
         }
-        {% else %}
+        {%- else -%}
         .layui-side.layui-bg-black {
             width: 50px;
         }
@@ -50,13 +49,12 @@
             left: 50px;
         }
         .layui-nav .layui-nav-item a {
-            padding: 0 0;
-            text-align: center;
+            padding: 0 17px;
         }
         .layui-nav-item span {
             display: none;
         }
-        {% endif %}
+        {%- endif -%}
         
         .layui-icon {
             font-size: 16px;
@@ -107,22 +105,30 @@
             float: right;
             display: none;
         }
-
         .layui-card .layui-card-header {
             color: #333;
             font-weight: 500;
         }
-
         .layui-card .layui-card-body {
             font-size: 12px;
-            color: #666;
+            color: #333;
         }
-
         .layui-card .update-time {
             color: #999;
+        }  
+        .userinfo {
+            float: right;
+            margin-right: 5px;
+        }
+        .flipx {    
+            transform: rotate(180deg);
+            -ms-transform: rotate(180deg);		/* IE 9 */
+            -webkit-transform: rotate(180deg);	/* Safari and Chrome */
+            -o-transform: rotate(180deg);		/* Opera */
+            -moz-transform: rotate(180deg);		/* Firefox */
         }
     </style>
-    {% block css %}{% endblock %}
+    {%- block css -%}{%- endblock -%}
 </head>
 
 <body class="layui-layout-body">
@@ -138,10 +144,12 @@
                             <dd><a href="javascript:;">列表二</a></dd>
                         </dl>
                     </li> #}
-                    <li class="layui-nav-item nav-extend-box"><a><i class="layui-icon layui-icon-spread-left"></i></a></li>
-                    {% for item in menus %}
+                    <li class="layui-nav-item nav-extend-box"><a><i class="layui-icon {%if navex=='true'%}layui-icon-shrink-right{%else%}layui-icon-spread-left{%endif%}"></i></a></li>
+                    {%- for item in menus -%}
+                    {%- if has(session.user.access, item.access) >= 0 -%}
                     <li class="layui-nav-item"><a href="{{item.url}}"><i class="layui-icon {{item.logo}}"></i><span>{{item.name}}</span></a></li>
-                    {% endfor %}
+                    {%- endif -%}
+                    {%- endfor -%}
                 </ul>
             </div>
         </div>
@@ -151,9 +159,9 @@
             {# <div style="padding: 15px;">内容主体区域<span class="stats">分享:51, 评论:28, 回复:20</span></div> #}
             <div style="padding: 20px; background-color: #F2F2F2;">
                 <div class="layui-row layui-col-space15">
-                    {% block content %}{% endblock %}
+                    {%- block content -%}{%- endblock -%}
                 </div>
-                {% block page %}{% endblock %}
+                {%- block page -%}{%- endblock -%}
             </div>
 
             <!-- 底部固定区域 -->
@@ -164,9 +172,11 @@
                 &nbsp;|&nbsp;
                 <a href="/about">Contact</a>
                 &nbsp;|&nbsp;
-                <a href="https://github.com/AutogenSh">GitHub</a>
+                <a href="https://github.com/autogensh">GitHub</a>
                 &nbsp;|&nbsp;
-                <a href="https://www.layui.com">Layui</a>
+                <a href="http://expressjs.com/">Express</a>
+                &nbsp;|&nbsp;
+                <a href="https://layui.com">Layui</a>
             </div>
         </div>
     </div>
@@ -181,9 +191,9 @@
         $('.layui-nav.layui-nav-tree').width(200); //设置宽度
         $('.layui-body').css('left', '200px');
         $('.layui-footer').css('left', '200px');
-        $('.layui-nav .layui-nav-item a').css('padding', '0 20px').css('text-align', 'initial');
+        $('.nav-extend-box i').removeClass('layui-icon-spread-left').addClass('layui-icon-shrink-right');
         $('.layui-nav-item span').each(function () {
-            $(this).show()
+            $(this).show();
         });
     }
     function collapse($) {
@@ -191,7 +201,7 @@
         $('.layui-nav.layui-nav-tree').width(50); //设置宽度
         $('.layui-body').css('left', '50px');
         $('.layui-footer').css('left', '50px');
-        $('.layui-nav .layui-nav-item a').css('padding', '0 0').css('text-align', 'center')
+        $('.nav-extend-box i').removeClass('layui-icon-shrink-right').addClass('layui-icon-spread-left');
         $('.layui-nav-item span').each(function () {
             $(this).hide()
         });
@@ -219,4 +229,4 @@
         });
     });
 </script>
-{% block javascript %}{% endblock %}
+{%- block javascript -%}{%- endblock -%}

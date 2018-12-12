@@ -1,31 +1,31 @@
-{% extends './layouts/master.html' %}
+{%- extends './layouts/master.html' -%}
 
-{% block title %}Autogen's Lab / 服务端开发{% endblock %}
+{%- block title -%}Autogen's Lab / 服务端开发{%- endblock -%}
 
-{% block css %}
-{% endblock %}
+{%- block css -%}
+{%- endblock -%}
 
-{% block content %}
-{% for item in articles %}
+{%- block content -%}
+{%- for item in articles -%}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><a href="javascript:window.open('/post/{{item.id}}')">{{item.title}}</a></div>
+        <div class="layui-card-header"><a href="/post/{{item.id}}">{{item.title}}</a></div>
         <div class="layui-card-body">
             摘要: {{item.summary}}<br>
             <span class="update-time">发布时间：{{item.create_at}}</span>
         </div>
     </div>
 </div>
-{% endfor %}
-{% endblock %}
+{%- endfor -%}
+{%- endblock -%}
 
-{% block page %}
+{%- block page -%}
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
     <div id="page"></div>
 </fieldset>
-{% endblock %}
+{%- endblock -%}
 
-{% block javascript %}
+{%- block javascript -%}
 <script>
     layui.config({
         base: '/layui/'
@@ -59,4 +59,4 @@
         })
     })
 </script>
-{% endblock %}
+{%- endblock -%}

@@ -4,10 +4,48 @@
  */
 var admin_service = require('../service/admin_service');
 var router = require('express').Router();
-var convert = require('../utils/convert')
+var convert = require('../utils/convert');
+var bcrypt = require('bcryptjs');
 
-var admin = (function() {
+var admin = (function () {
     
+    router.get('/login', function (req, res) {
+        res.render('admin/login.html', req);
+    });
+
+    router.get('/logout', function(req, res) {
+        req.session.destroy();
+        res.redirect('/');
+    });
+
+    router.post('/login', function (req, res) {
+        req.name = req.body.name.trim();
+        req.pwd = req.body.pwd.trim();
+        admin_service.get_user_by_name(req)
+            .then(req => new Promise((resolve, reject) => { req.id = req.user.role; resolve(req) }))
+            .then(admin_service.get_access_by_role)
+            .then(function (req) {
+                var result = {};
+                req.user.access = [];
+                req.accesses.forEach(element => {
+                    req.user.access.push(element.access)
+                });
+                if (bcrypt.compareSync(req.pwd, req.user.pwd)) {
+                    result.code = 0;
+                    result.msg = '登陆成功';
+                    req.session.user = req.user;
+                    res.redirect('/admin/tag');
+                } else {
+                    result.code = 1;
+                    result.msg = '登陆失败';
+                }
+                res.json(result);
+            })
+            .catch(function (reason) {
+                res.end('<p>' + reason + '</p>')
+            });
+    });
+
     router.get('/tag', function (req, res) {
         admin_service.get_menu(req)
             .then(function (req) {
@@ -493,7 +531,7 @@ var admin = (function() {
 
             })
     })
-    
+
     // ==========================================================
 
     router.get('/user', function (req, res) {

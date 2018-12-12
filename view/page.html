@@ -1,8 +1,8 @@
-{% extends './layouts/master.html' %}
+{%- extends './layouts/master.html' -%}
 
-{% block title %}{{article.title}} - Autogen's Lab{% endblock %}
+{%- block title -%}{{article.title}} - Autogen's Lab{%- endblock -%}
 
-{% block css %}
+{%- block css -%}
 <link rel="stylesheet" href="/prettify/css/tomorrow-night-eighties.min.css" />
 <style>
     .layui-card-body {
@@ -31,9 +31,9 @@
     }
     
 </style>
-{% endblock %}
+{%- endblock -%}
 
-{% block content %}
+{%- block content -%}
 <div class="layui-col-md12">
     <div class="layui-card">
         <div class="layui-card-header">{{article.title}}</div>
@@ -46,9 +46,9 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{%- endblock -%}
 
-{% block javascript %}
+{%- block javascript -%}
 <script src="/prettify/js/prettify.js"></script>
 
 <script>
@@ -61,4 +61,4 @@
         });
     });
 </script>
-{% endblock %}
+{%- endblock -%}
