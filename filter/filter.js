@@ -24,10 +24,10 @@ module.exports = (function () {
         req.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex;
         if (req.method == 'GET') {
             req.page = convert.int(req.query.page, 1);
-            req.limit = convert.int(req.query.limit, 3);
+            req.limit = convert.int(req.query.limit, 10);
         } else if (req.method == 'POST') {
             req.page = convert.int(req.body.page, 1);
-            req.limit = convert.int(req.body.limit, 3);
+            req.limit = convert.int(req.body.limit, 10);
         }
 
         if (req.session.user == null || req.session.user.id == null) {
