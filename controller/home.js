@@ -2,16 +2,16 @@
  *
  *
  */
-var publish_service = require('../service/publish_service');
+var service = require('../service/publish_service');
+var convert = require('../util/convert')
 var router = require('express').Router();
 
 var home = (function () {
-    router.get('/test', function(req, res) {
-        req.keyword = req.query.keyword.trim();
-        req.index = 'article';
-        publish_service.test(req)
+    router.get('/search', function(req, res) {
+        req.tag = req.query.tag.trim();
+        service.search_article(req)
             .then(function(req) {
-                res.end('<p>' + JSON.stringify(req.data) + '</p>');
+                res.json(req.data);
             })
             .catch(function(reason){
                 res.end('<p>' + reason + '</p>');
@@ -19,10 +19,34 @@ var home = (function () {
     });
 
     router.all('/', function (req, res) {
-        publish_service.get_menu(req)
-            .then(publish_service.get_publish_article_count)
-            .then(publish_service.get_publish_article_list)
-            .then(function (req) { 
+        service.get_menu(req)
+            .then(service.get_publish_article_count)
+            .then(service.get_publish_article_list)
+            .then(function (req) {
+                res.render('index.html', req);
+            })
+            .catch(function (reason) {
+                res.end('<p>' + reason + '</p>');
+            });
+    });
+
+    router.all('/tag/:tag', function (req, res) {
+        req.page = convert.int(req.params.page, 1);
+        req.limit = convert.int(req.params.limit, 10);
+        req.tag = req.params.tag.trim();
+        service.get_menu(req)
+            .then(service.search_article)
+            .then(function (req) {
+                req.total = req.data.total;
+                req.articles = [];
+                req.data.matches.forEach(function (value, index) {
+                    var article = {};
+                    article.id = value.attrs.article_id;
+                    article.title = value.attrs.title;
+                    article.summary = value.attrs.summary;
+                    article.create_at = value.attrs.create_at;
+                    req.articles.push(article);
+                });
                 res.render('index.html', req);
             })
             .catch(function (reason) {
@@ -31,20 +55,13 @@ var home = (function () {
     });
 
     router.get('/about', function(req, res) {
-        publish_service.get_menu(req)
+        service.get_menu(req)
             .then(function (req) {
                 res.render('about.html', req)
             })
             .catch(function (reason) {
                 res.end('<p>' + reason + '</p>')
             });
-    });
-
-    router.get('/test', function (req, res) {
-        req.test = {}
-        req.test.name = 'test'
-        req.test.val = 'test-val'
-        res.json(req.test)
     });
 
     return {

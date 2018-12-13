@@ -34,16 +34,14 @@ module.exports = (function () {
             req.session.user = guest;
         }
 
-        // console.log('session: %s', JSON.stringify(req.session));
-
         req.has = indexOf;
 
+        // res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         next();
     };
 
 
     var after = function (req, res, next) {
-        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         next();
     };
 

@@ -5,6 +5,13 @@
 {%- block css -%}
 {%- endblock -%}
 
+{%- block search -%}
+<div style="padding: 10px 20px 0 20px; line-height: 38px">
+    <i id="search-ico" class="layui-icon layui-icon-search"></i>
+    <input type="text" id="search-box" autocomplete="false" placeholder="搜索文章" class="layui-input" value="{{tag}}">
+</div>
+{%- endblock -%}
+
 {%- block content -%}
 {%- for item in articles -%}
 <div class="layui-col-md12">
@@ -33,6 +40,7 @@
     layui.use(['laypage', 'jquery'], function () {
         var laypage = layui.laypage;
         var $ = layui.$;
+
         laypage.render({
             layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'],
             elem: 'page',
@@ -56,7 +64,34 @@
                     }
                 }
             }
-        })
+        });
+
+        var format = function (timestamp) {
+            var d = new Date(timestamp); //根据时间戳生成的时间对象
+            var date = (d.getFullYear()) + "-" +
+                (d.getMonth() + 1) + "-" +
+                (d.getDate()) + " " +
+                (d.getHours()) + ":" +
+                (d.getMinutes()) + ":" +
+                (d.getSeconds());
+        }
+
+        var len = $('#search-box').val().length;
+        if (len>0 && document.getElementById('search-box').setSelectionRange) {
+            document.getElementById('search-box').setSelectionRange(len, len);
+            $('#search-box').focus();
+        }
+
+        $('#search-box').bind('keydown', function (event) {
+            if (event.keyCode == "13") {
+                var tag = $('#search-box').val();
+                if (tag == '') {
+                    location.href = '/';
+                } else {
+                    location.href = '/tag/' + tag;
+                }
+            }
+        });
     })
 </script>
 {%- endblock -%}

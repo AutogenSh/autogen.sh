@@ -18,7 +18,8 @@ module.exports = (function() {
     var total = req => new Promise((resolve, reject) => { req.total = req.data[0].total; resolve(req) });
 
     return {
-        test: function(req) {
+        search_article: function(req) {
+            req.index = 'article';
             return sphinx.query(req);
         },
         // return accesses
@@ -46,8 +47,10 @@ module.exports = (function() {
         // return articles
         get_publish_article_list: function(req) {
             req.sql = 'select `id`, `title`, `summary`, `status`, `create_by`, ' +
-            'date_format(`create_at`, "%Y-%c-%e %l:%i:%s") as create_at, ' + 
-            'date_format(`modify_at`, "%Y-%c-%e %l:%i:%s") as modify_at ' +
+            // 'date_format(`create_at`, "%Y-%c-%e %l:%i:%s") as create_at, ' + 
+            // 'date_format(`modify_at`, "%Y-%c-%e %l:%i:%s") as modify_at ' +
+            'create_at, ' + 
+            'modify_at ' +
             'from `t_article` where `status`=0 order by `id` desc limit ?,?';
             req.params = [low(req), high(req)];
             return dao.query(req).then(req => new Promise((resolve, reject) => { req.articles = req.data; resolve(req) }))
