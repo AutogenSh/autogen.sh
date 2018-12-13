@@ -21,6 +21,7 @@ var admin = (function () {
     router.post('/login', function (req, res) {
         req.name = req.body.name.trim();
         req.pwd = req.body.pwd.trim();
+        req.vercode = req.body.vercode.trim();
         admin_service.get_user_by_name(req)
             .then(req => new Promise((resolve, reject) => { req.id = req.user.role; resolve(req) }))
             .then(admin_service.get_access_by_role)
