@@ -19,7 +19,7 @@ var config = (function () {
         };
     })();
 
-    var mysql = (function () {
+    var mysql_config = (function () {
         return {
             host: '192.168.50.128',
             port: '3306',
@@ -32,11 +32,11 @@ var config = (function () {
         };
     })();
 
-    var redis = (function () {
+    var redis_config = (function () {
         return {
             host: '192.168.50.128',
             port: 6379,
-            db: '0'
+            db: 0
         };
     })();
 
@@ -63,14 +63,21 @@ var config = (function () {
         };
     })();
 
-    var session
+    var sphinx_config = (function(){
+        return {
+            host: '192.168.50.128',
+            port: 9312,
+        };
+    })();
 
     return {
-        pool: null,    // need to set in app.js
-        cache: null,   // need to set in app.js
+        mysql: null,    // need to set in app.js
+        redis: null,    // need to set in app.js
+        sphinx: null,   // need to set in app.js
         path: dirs,
-        mysql: mysql,
-        redis: redis,
+        mysql_config: mysql_config,
+        redis_config: redis_config,
+        sphinx_config: sphinx_config,
         nunjucks: nunjucks,
         marked: md,
         cookie: cookie

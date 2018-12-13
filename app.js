@@ -7,6 +7,7 @@ var nunjucks = require('nunjucks');
 var marked = require('marked');
 var mysql = require('mysql');
 var redis = require('redis');
+var SphinxClient = require ("sphinxapi");
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var bodyParser = require('body-parser');
@@ -16,15 +17,18 @@ var express = require('express');
 var filter = require('./filter/filter');
 var app = express();
 
-var application = (function () {
+(function () {
     var port = process.env.PORT || 8888;
 
     var init = function () {
         config.nunjucks.express = app;
         nunjucks.configure(config.path.view, config.nunjucks);
         marked.setOptions(config.marked);
-        config.pool = mysql.createPool(config.mysql);
-        config.cache = redis.createClient(config.redis);
+        config.mysql = mysql.createPool(config.mysql_config);
+        config.redis = redis.createClient(config.redis_config);
+        config.sphinx = new SphinxClient();
+        config.sphinx.SetServer(config.sphinx_config.host, config.sphinx_config.port);
+        config.sphinx.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED);
 
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,7 +38,7 @@ var application = (function () {
             cookie: config.cookie,
             resave: true,
             saveUninitialized: false,
-            store: new RedisStore(config.redis)
+            store: new RedisStore(config.redis_config)
         }));
         app.use(express.static(config.path.static));
         app.use(filter.before);

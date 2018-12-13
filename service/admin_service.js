@@ -28,12 +28,6 @@ var admin_service = (function () {
             req.params = [req.id];
             return dao.query(req).then(req => new Promise((resolve, reject) => { req.accesses = req.data; resolve(req) }));
         },
-        // register: function (req) {
-        //     var hash = bcrypt.hashSync('es1786ESW', salt);
-        //     req.sql = 'update t_user set `pwd`=? where `id`=?';
-        //     req.params = [hash, 10000];
-        //     return dao.query(req);
-        // },
         // menus
         get_menu: function (req) {
             req.sql = 'select `name`, `logo`, `url`, `access` from `t_menu_item` where `status`=0 order by `order`';

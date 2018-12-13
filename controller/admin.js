@@ -4,7 +4,7 @@
  */
 var admin_service = require('../service/admin_service');
 var router = require('express').Router();
-var convert = require('../utils/convert');
+var convert = require('../util/convert');
 var bcrypt = require('bcryptjs');
 
 var admin = (function () {

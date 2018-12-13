@@ -4,9 +4,9 @@ var config = require('../config/config');
 
 var dao = (function () {
     var query_mysql = function (sql, params, success, error) {
-        config.pool.getConnection(function (err, conn) {
+        config.mysql.getConnection(function (err, conn) {
             if (err) {
-                console.log('pool.getConnection error, sql: %s, errmsg: %s', sql, err);
+                console.log('mysql.getConnection error, sql: %s, errmsg: %s', sql, err);
                 error(err);
             } else {
                 conn.query(sql, params, function (err, data) {

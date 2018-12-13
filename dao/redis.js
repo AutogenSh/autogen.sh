@@ -8,7 +8,7 @@ var cache = (function () {
       });
 
     var redis_get = function (key, success, error) {
-        config.cache.get(key, function (err, res) {
+        config.redis.get(key, function (err, res) {
             if (err) {
                 console.log('cache.get error, key: %s, errmsg: %s', key, err);
                 error(err);
@@ -19,7 +19,7 @@ var cache = (function () {
     };
 
     var redis_set = function(key, val, success, error) {
-        config.cache.set(key, val, function(err, res) {
+        config.redis.set(key, val, function(err, res) {
             if (err) {
                 console.log('cache.set error, key: %s, val: %s, errmsg: %s', key, val, err);
                 error(err);

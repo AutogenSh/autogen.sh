@@ -3,8 +3,9 @@ var path = require('path');
 var marked = require('marked')
 var config = require('../config/config');
 var dao = require('../dao/dao');
+var sphinx = require('../dao/sphinx');
 
-var publish_service = (function() {
+module.exports = (function() {
     var low = function(req) {
         return (req.page - 1) * req.limit;
     };
@@ -17,6 +18,9 @@ var publish_service = (function() {
     var total = req => new Promise((resolve, reject) => { req.total = req.data[0].total; resolve(req) });
 
     return {
+        test: function(req) {
+            return sphinx.query(req);
+        },
         // return accesses
         get_access_by_role: function(req) {
             req.sql = 'select `access` from `t_role_access` where `role`=? ';
@@ -62,5 +66,3 @@ var publish_service = (function() {
     }
 
 })();
-
-module.exports = publish_service;

@@ -1,5 +1,5 @@
 
-var convert = require('../utils/convert');
+var convert = require('../util/convert');
 var moment = require("moment");
 var service = require('../service/publish_service');
 
@@ -43,6 +43,7 @@ module.exports = (function () {
 
 
     var after = function (req, res, next) {
+        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         next();
     };
 
