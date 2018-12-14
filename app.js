@@ -15,6 +15,7 @@ var SphinxClient = require ("sphinxapi");
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 // var bodyParser = require('body-parser');
+var helmet = require('helmet');
 var cookieParser = require('cookie-parser');
 var express = require('express');
 var filter = require('./filter/filter');
@@ -33,6 +34,7 @@ var app = express();
         config.sphinx.SetServer(config.sphinx_config.host, config.sphinx_config.port);
         config.sphinx.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED);
 
+        app.use(helmet());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
         app.use(cookieParser('autogen-'));
