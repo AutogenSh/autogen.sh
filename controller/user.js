@@ -2,7 +2,7 @@
  *
  *
  */
-var publish_service = require('../service/publish_service');
+var service = require('../service/public_service');
 var router = require('express').Router();
 
 var user = (function() {

@@ -1,20 +1,9 @@
 
 var convert = require('../util/convert');
 var moment = require("moment");
-var createError = require('http-errors');
-var service = require('../service/publish_service');
+var service = require('../service/public_service');
 
 module.exports = (function () {
-
-    var guest = {};
-
-    var init = function () {
-        guest.id = 10001;
-        guest.status = 0;
-        guest.name = 'Guest';
-        guest.role = 10000;
-        guest.access = ['article'];
-    };
 
     var indexOf = (list, element) => list.indexOf(element);
 
@@ -31,12 +20,10 @@ module.exports = (function () {
         }
 
         if (req.session.user == null || req.session.user.id == null) {
-            req.session.user = guest;
+            req.session.user = service.get_guest_user();
         }
 
         req.has = indexOf;
-
-        // res.header('Content-Type', 'text/html;charset=utf-8');
         next();
     };
 
@@ -52,13 +39,6 @@ module.exports = (function () {
         res.status(err.status || 500);
         res.render('500.html', req);
     };
-
-    var login_filter = function (req, res, next) {
-        console.log(moment().format("YYYY-MM-DD HH:mm:ss.SSS") + ' load_menu');
-        next();
-    };
-
-    init();
 
     return {
         before: before,

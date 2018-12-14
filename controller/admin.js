@@ -9,13 +9,16 @@ var bcrypt = require('bcryptjs');
 
 var admin = (function () {
 
+    var login_filter = function (req, res, next) {
+        if (req.session.user.id == 10001) {
+            res.redirect('/admin/login');
+        } else {
+            next();
+        }
+    };
+
     router.get('/login', function (req, res) {
         res.render('admin/login.html', req);
-    });
-
-    router.get('/logout', function (req, res) {
-        req.session.destroy();
-        res.redirect('/');
     });
 
     router.post('/login', function (req, res, next) {
@@ -74,6 +77,14 @@ var admin = (function () {
             .catch(function (req) {
                 res.json(req.result);
             });
+    });
+
+    router.use(login_filter);
+
+    router.get('/logout', function (req, res) {
+        req.session.destroy(function() {
+            res.redirect('/');
+        });
     });
 
     router.get('/tag', function (req, res) {

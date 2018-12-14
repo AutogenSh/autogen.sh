@@ -2,7 +2,7 @@
  *
  *
  */
-var service = require('../service/publish_service');
+var service = require('../service/public_service');
 var convert = require('../util/convert');
 var router = require('express').Router();
 

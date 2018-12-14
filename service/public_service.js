@@ -17,7 +17,18 @@ module.exports = (function() {
 
     var total = req => new Promise((resolve, reject) => { req.total = req.data[0].total; resolve(req) });
 
+    var guest = {
+        id: 10001,
+        status: 0,
+        name: 'Guest',
+        role: 10000,
+        access: ['article'],
+    };
+
     return {
+        get_guest_user: function() {
+            return guest;
+        },
         search_article: function(req) {
             req.index = 'article';
             return sphinx.query(req);
