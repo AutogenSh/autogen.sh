@@ -46,10 +46,11 @@ module.exports = (function () {
     };
 
     var server_error = function (err, req, res, next) {
+        console.log(err.stack);
         req.error = err;
         req.message = err.message;
         res.status(err.status || 500);
-        res.render('404.html', req);
+        res.render('500.html', req);
     };
 
     var login_filter = function (req, res, next) {

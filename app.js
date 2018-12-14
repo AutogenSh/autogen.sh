@@ -2,6 +2,10 @@
  *
  *
  */
+var fs = require('fs');
+var path = require('path');
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 var config = require('./config/config');
 var nunjucks = require('nunjucks');
 var marked = require('marked');
@@ -12,7 +16,6 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 // var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var path = require('path');
 var express = require('express');
 var filter = require('./filter/filter');
 var app = express();
@@ -43,8 +46,10 @@ var app = express();
         app.use(express.static(config.path.static));
         app.use(filter.before);
         regist('controller');
-        // app.use(filter.page_not_found);
-        // app.use(filter.server_error);
+        eventEmitter.on('regist_completed', function (params) {
+            app.use(filter.page_not_found);
+            app.use(filter.server_error);
+        });
     }
 
     var run = function () {
@@ -56,7 +61,6 @@ var app = express();
     }
 
     var regist = function (dir) {
-        var fs = require('fs');
         fs.readdir(dir, function (err, files) {
             if (err) {
                 console.log(err);
@@ -64,15 +68,16 @@ var app = express();
             }
             files.forEach(function (name) {
                 if (path.extname(name) == '.js') {
-                    cls = path.basename(name, '.js')
-                    console.log('regist controller: %s', cls)
+                    cls = path.basename(name, '.js');
+                    console.log('regist controller: %s', cls);
                     eval(('{cls}=require("./{dir}/{cls}");' +
                         'app.use({cls}.path, {cls}.router);')
                         .replace(/{cls}/g, cls)
                         .replace(/{dir}/g, dir));
                 }
-            })
-        })
+            });
+            eventEmitter.emit('regist_completed');
+        });
     }
 
     init();

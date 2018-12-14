@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="/layui/css/layui.css?t=20181212-2" media="all">
     <link rel="stylesheet" href="/font-mfizz/font-mfizz.css?t=20181212-2" media="all">
-    <title>404 - Autogen's Lab</title>
+    <title>500 - Autogen's Lab</title>
     <style>
         .layui-container {
             width: 400px;
@@ -21,10 +21,16 @@
             float: left;
             line-height: 38px;
         }
+        div {
+            font-size: 16px;
+        }
         .layui-btn {
             float: left;
             line-height: 38px;
             margin-left: 20px;
+        }
+        .clear {
+            clear: both;
         }
     </style>
 </head>
@@ -34,9 +40,12 @@
         <div class="fly-panel">
             <div class="fly-none">
                 <h2><i class="layui-icon layui-icon-face-cry"></i></h2>
-                <br><br><br><br>
-                <p>页面不见了</p>
+                <br><br><br>
+                <p>服务器出错啦</p>
                 <a href="/" class="layui-btn">返回首页</a>
+                <div class="clear"></div>
+                <br>
+                <div>{{ error }}</div>
             </div>
         </div>
     </div>

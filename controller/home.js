@@ -4,7 +4,6 @@
  */
 var service = require('../service/publish_service');
 var convert = require('../util/convert');
-var filter = require('../filter/filter');
 var router = require('express').Router();
 
 var home = (function () {
@@ -64,8 +63,6 @@ var home = (function () {
                 res.send('<p>' + reason + '</p>')
             });
     });
-
-    router.use(filter.page_not_found);
 
     return {
         path: '',
