@@ -12,7 +12,7 @@ module.exports = (function () {
         service.get_menu(req)
             .then(service.get_article_detail)
             .then(service.get_markdown)
-            .then(req => res.render('page.html', req))
+            .then(req => res.render('post.html', req))
             .catch(reason => next(reason));
     });
 
