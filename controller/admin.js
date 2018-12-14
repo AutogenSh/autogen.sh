@@ -43,7 +43,7 @@ var admin = (function () {
                 res.json(result);
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             });
     });
 
@@ -53,7 +53,7 @@ var admin = (function () {
                 res.render('admin/tag.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     });
 
@@ -139,7 +139,7 @@ var admin = (function () {
                 res.render('admin/access.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     })
 
@@ -229,7 +229,7 @@ var admin = (function () {
                 res.render('admin/menu.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     })
 
@@ -324,7 +324,7 @@ var admin = (function () {
                 res.render('admin/role.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     })
 
@@ -410,7 +410,7 @@ var admin = (function () {
                 res.render('admin/article.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     })
 
@@ -542,7 +542,7 @@ var admin = (function () {
                 res.render('admin/user.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             })
     })
 

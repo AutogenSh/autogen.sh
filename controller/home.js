@@ -3,7 +3,8 @@
  *
  */
 var service = require('../service/publish_service');
-var convert = require('../util/convert')
+var convert = require('../util/convert');
+var filter = require('../filter/filter');
 var router = require('express').Router();
 
 var home = (function () {
@@ -14,7 +15,7 @@ var home = (function () {
                 res.json(req.data);
             })
             .catch(function(reason){
-                res.end('<p>' + reason + '</p>');
+                res.send('<p>' + reason + '</p>');
             });
     });
 
@@ -26,7 +27,7 @@ var home = (function () {
                 res.render('index.html', req);
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>');
+                res.send('<p>' + reason + '</p>');
             });
     });
 
@@ -50,7 +51,7 @@ var home = (function () {
                 res.render('index.html', req);
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>');
+                res.send('<p>' + reason + '</p>');
             });
     });
 
@@ -60,9 +61,11 @@ var home = (function () {
                 res.render('about.html', req)
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>')
             });
     });
+
+    router.use(filter.page_not_found);
 
     return {
         path: '',

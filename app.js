@@ -10,7 +10,7 @@ var redis = require('redis');
 var SphinxClient = require ("sphinxapi");
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-var bodyParser = require('body-parser');
+// var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var path = require('path');
 var express = require('express');
@@ -30,8 +30,8 @@ var app = express();
         config.sphinx.SetServer(config.sphinx_config.host, config.sphinx_config.port);
         config.sphinx.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED);
 
-        app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
         app.use(cookieParser('autogen-'));
         app.use(session({
             secret: 'autogen-',
@@ -43,7 +43,8 @@ var app = express();
         app.use(express.static(config.path.static));
         app.use(filter.before);
         regist('controller');
-        app.use(filter.after);
+        // app.use(filter.page_not_found);
+        // app.use(filter.server_error);
     }
 
     var run = function () {

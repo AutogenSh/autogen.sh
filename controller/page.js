@@ -16,7 +16,7 @@ var page = (function () {
                 res.render('page.html', req);
             })
             .catch(function (reason) {
-                res.end('<p>' + reason + '</p>');
+                res.send('<p>' + reason + '</p>');
             });
     })
 
