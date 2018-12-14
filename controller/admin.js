@@ -8,42 +8,71 @@ var convert = require('../util/convert');
 var bcrypt = require('bcryptjs');
 
 var admin = (function () {
-    
+
     router.get('/login', function (req, res) {
         res.render('admin/login.html', req);
     });
 
-    router.get('/logout', function(req, res) {
+    router.get('/logout', function (req, res) {
         req.session.destroy();
         res.redirect('/');
     });
 
-    router.post('/login', function (req, res) {
+    router.post('/login', function (req, res, next) {
         req.name = req.body.name.trim();
         req.pwd = req.body.pwd.trim();
         req.vercode = req.body.vercode.trim();
-        admin_service.get_user_by_name(req)
+
+        (req => new Promise((resolve, reject) => {
+            // verify vercode
+            req.result = {};
+            if (req.vercode != 'autogen') {
+                // vercode error
+                req.result.code = 1;
+                    // vercode error
+                req.result.msg = '登陆失败, 验证码错误';
+                reject(req);
+            } else {
+                resolve(req);
+            }
+        }))(req)
+            .then(admin_service.get_user_by_name)
+            .then(req => new Promise((resolve, reject) => {
+                if (req.user == null) {
+                    // username error
+                    req.result.code = 1;
+                    req.result.msg = '登陆失败, 用户名或者密码错误';
+                    reject(req);
+                } else {
+                    resolve(req);
+                }
+            }))
             .then(req => new Promise((resolve, reject) => { req.id = req.user.role; resolve(req) }))
             .then(admin_service.get_access_by_role)
-            .then(function (req) {
-                var result = {};
+            .then(req => new Promise((resolve, reject) => {
                 req.user.access = [];
                 req.accesses.forEach(element => {
                     req.user.access.push(element.access)
                 });
+
                 if (bcrypt.compareSync(req.pwd, req.user.pwd)) {
-                    result.code = 0;
-                    result.msg = '登陆成功';
-                    req.session.user = req.user;
-                    res.redirect('/admin/tag');
+                    resolve(req);
                 } else {
-                    result.code = 1;
-                    result.msg = '登陆失败';
+                    // password error
+                    req.result.code = 1;
+                    req.result.msg = '登陆失败, 用户名或者密码错误';
+                    reject(req);
                 }
-                res.json(result);
+            }))
+            .then((req) => {
+                req.result.code = 0;
+                req.result.msg = '登陆成功';
+                req.session.user = req.user;
+                res.json(req.result);
+                // res.redirect('/admin/tag');
             })
-            .catch(function (reason) {
-                res.send('<p>' + reason + '</p>')
+            .catch(function (req) {
+                res.json(req.result);
             });
     });
 

@@ -13,7 +13,7 @@ module.exports = (function () {
             .then(publish_service.get_article_detail)
             .then(publish_service.get_markdown)
             .then(req => res.render('page.html', req))
-            .catch(reason => next(new Error(reason)));
+            .catch(reason => next(reason));
     });
 
     return {

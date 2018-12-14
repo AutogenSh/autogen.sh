@@ -36,7 +36,7 @@ module.exports = (function () {
 
         req.has = indexOf;
 
-        res.header('Content-Type', 'text/html;charset=utf-8');
+        // res.header('Content-Type', 'text/html;charset=utf-8');
         next();
     };
 
