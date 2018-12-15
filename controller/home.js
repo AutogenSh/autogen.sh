@@ -18,7 +18,9 @@ var home = (function () {
             });
     });
 
-    router.all('/', function (req, res) {
+    router.get('/', function (req, res) {
+        console.log('=====> req.page[%d] req.limit[%d]', req.page, req.limit);
+
         service.get_menu(req)
             .then(service.get_publish_article_count)
             .then(service.get_publish_article_list)
@@ -30,7 +32,7 @@ var home = (function () {
             });
     });
 
-    router.all('/tag/:tag', function (req, res) {
+    router.get('/tag/:tag', function (req, res) {
         req.page = convert.int(req.params.page, 1);
         req.limit = convert.int(req.params.limit, 10);
         req.tag = req.params.tag.trim();

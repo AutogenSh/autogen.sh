@@ -11,7 +11,7 @@ module.exports = (function () {
         console.log('[%s] %s %s', moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.method, req.url);
 
         req.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex;
-        if (req.method == 'GET') {
+        if (req.method == 'GET' || req.method == 'HEAD') {
             req.page = convert.int(req.query.page, 1);
             req.limit = convert.int(req.query.limit, 10);
         } else if (req.method == 'POST') {

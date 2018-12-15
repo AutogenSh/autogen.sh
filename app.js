@@ -14,7 +14,6 @@ var redis = require('redis');
 var SphinxClient = require ("sphinxapi");
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-// var bodyParser = require('body-parser');
 var helmet = require('helmet');
 var cookieParser = require('cookie-parser');
 var express = require('express');
