@@ -38,6 +38,7 @@ var app = express();
         app.use(express.urlencoded({ extended: true }));
         app.use(cookieParser('autogen-'));
         app.use(session({
+            name: 'sid',
             secret: 'autogen-',
             cookie: config.cookie,
             resave: true,

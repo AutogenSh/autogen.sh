@@ -5,7 +5,7 @@
 var service = require('../service/public_service');
 var router = require('express').Router();
 
-var user = (function() {
+module.exports = (function() {
     
     router.get('/:id', function (req, res) {
         console.log('home.about, id=' + req.params.id)
@@ -18,5 +18,4 @@ var user = (function() {
     }
 })();
 
-module.exports = user
 

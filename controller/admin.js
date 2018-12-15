@@ -7,7 +7,7 @@ var router = require('express').Router();
 var convert = require('../util/convert');
 var bcrypt = require('bcryptjs');
 
-var admin = (function () {
+module.exports = (function () {
 
     var login_filter = function (req, res, next) {
         if (req.session.user.id == 10001) {
@@ -668,4 +668,3 @@ var admin = (function () {
     };
 })();
 
-module.exports = admin

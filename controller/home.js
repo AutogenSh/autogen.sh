@@ -6,7 +6,7 @@ var service = require('../service/public_service');
 var convert = require('../util/convert');
 var router = require('express').Router();
 
-var home = (function () {
+module.exports = (function () {
     router.get('/search', function(req, res) {
         req.tag = req.query.tag.trim();
         service.search_article(req)
@@ -19,8 +19,6 @@ var home = (function () {
     });
 
     router.get('/', function (req, res) {
-        console.log('=====> req.page[%d] req.limit[%d]', req.page, req.limit);
-
         service.get_menu(req)
             .then(service.get_publish_article_count)
             .then(service.get_publish_article_list)
@@ -59,10 +57,10 @@ var home = (function () {
     router.get('/about', function(req, res) {
         service.get_menu(req)
             .then(function (req) {
-                res.render('about.html', req)
+                res.render('about.html', req);
             })
             .catch(function (reason) {
-                res.send('<p>' + reason + '</p>')
+                res.send('<p>' + reason + '</p>');
             });
     });
 
@@ -72,5 +70,3 @@ var home = (function () {
     };
 
 })();
-
-module.exports = home

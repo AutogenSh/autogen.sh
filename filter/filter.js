@@ -7,8 +7,15 @@ module.exports = (function () {
 
     var indexOf = (list, element) => list.indexOf(element);
 
+    var get_client_ip = function (req) {
+        return req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress || '';
+    };
+
     var before = function (req, res, next) {
-        console.log('[%s] %s %s', moment().format("YYYY-MM-DD HH:mm:ss.SSS"), req.method, req.url);
+        console.log('[%s] %s %s %s sessionID: %s', moment().format("YYYY-MM-DD HH:mm:ss.SSS"), get_client_ip(req), req.method, req.url, req.sessionID);
 
         req.navex = (req.cookies.navex == null) ? 'true' : req.cookies.navex;
         if (req.method == 'GET' || req.method == 'HEAD') {
