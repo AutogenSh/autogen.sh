@@ -1,7 +1,7 @@
 
 var config = require('../config/config');
 
-var cache = (function () {
+module.exports = (function () {
 
     client.on('error', function (err) {
         console.log('reids error, errmsg: %s', err);
@@ -56,5 +56,3 @@ var cache = (function () {
         set: set
     };
 })();
-
-module.exports = cache;

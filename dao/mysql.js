@@ -2,7 +2,7 @@
 var fs = require('fs');
 var config = require('../config/config');
 
-var dao = (function () {
+module.exports = (function () {
     var query_mysql = function (sql, params, success, error) {
         config.mysql.getConnection(function (err, conn) {
             if (err) {
@@ -79,6 +79,3 @@ var dao = (function () {
         writefile: writefile,
     };
 })();
-
-module.exports = dao;
-
