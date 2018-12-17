@@ -6,6 +6,7 @@ var admin_service = require('../service/admin_service');
 var router = require('express').Router();
 var convert = require('../util/convert');
 var bcrypt = require('bcryptjs');
+var svgCaptcha = require('svg-captcha');
 
 module.exports = (function () {
 
@@ -17,26 +18,38 @@ module.exports = (function () {
         }
     };
 
+    router.get('/captcha', function (req, res) {
+        var captcha = svgCaptcha.create({
+            charPreset: 'abcdefghkqxyzABCDEFGHKMNPQRSTUVWXYZ0123456789',
+            fontSize: 41,
+            noise: 2,
+            width: 120,
+            height: 40,
+        });
+        req.session.captcha = captcha.text.toLowerCase();
+        res.type('svg');
+        res.send(captcha.data);
+    });
+
     router.get('/login', function (req, res) {
         res.render('admin/login.html', req);
     });
 
     router.post('/login', function (req, res, next) {
-        req.name = req.body.name.trim();
-        req.pwd = req.body.pwd.trim();
-        req.vercode = req.body.vercode.trim();
+        req.name = req.body.name || '';
+        req.pwd = req.body.pwd || '';
+        req.vercode = req.body.vercode || '';
 
         (req => new Promise((resolve, reject) => {
             // verify vercode
             req.result = {};
-            if (req.vercode != 'autogen') {
-                // vercode error
+            console.log('###### captcha session[%s] req[%s]', req.session.captcha, req.vercode);
+            if (req.vercode.toLowerCase() == req.session.captcha) {
+                resolve(req);
+            } else {
                 req.result.code = 1;
-                    // vercode error
                 req.result.msg = '登陆失败, 验证码错误';
                 reject(req);
-            } else {
-                resolve(req);
             }
         }))(req)
             .then(admin_service.get_user_by_name)

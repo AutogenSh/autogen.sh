@@ -112,8 +112,11 @@
                 <input type="text" name="vercode" id="vercode" lay-verify="required" placeholder="图形验证码" class="layui-input">
               </div>
               <div class="layui-col-xs5">
-                <div style="margin-left: 10px;">
-                  <img src="https://www.oschina.net/action/user/captcha" class="layadmin-user-login-codeimg">
+                <div style="margin-left: 10px; position: relative;">
+                  <img id="captcha" data class="layadmin-user-login-codeimg" style="display: none; position: absolute; top: 0; left: 0;">
+                  <div class="layui-layer layui-layer-loading" id="loading" type="loading" times="2" showtime="0" contype="string" style="position: absolute; top: 4px; left: 44px;">
+                    <div id="" class="layui-layer-content layui-layer-loading2"></div><span class="layui-layer-setwin"></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -133,6 +136,19 @@
     var form = layui.form;
     var $ = layui.$;
 
+    var captcha = document.getElementById('captcha');
+    captcha.onload = function (params) {
+      $('#captcha').show();
+      $('#loading').hide();
+    };
+    captcha.src = '/admin/captcha?'+Math.random();
+
+    $('#captcha').click(function() {
+      $('#loading').show();
+      $('#captcha').hide();
+      $('#captcha').attr('src','/admin/captcha?'+Math.random());
+    });
+
     form.on('submit(submit)', function (data) {
       $.post('/admin/login',
         {
@@ -144,7 +160,9 @@
           if (res.code == 0) {
             location.href = '/';
           } else {
-            layer.alert(res.msg, {icon: 5});
+            layer.alert(res.msg, {icon: 5}, function name(params) {
+              location.reload();
+            });
           }
         });
       return false;
