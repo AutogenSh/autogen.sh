@@ -11,7 +11,7 @@ var nunjucks = require('nunjucks');
 var marked = require('marked');
 var mysql = require('mysql');
 var redis = require('redis');
-var SphinxClient = require ("sphinxapi");
+var SphinxClient = require("sphinxapi");
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var helmet = require('helmet');
@@ -45,7 +45,7 @@ var app = express();
             saveUninitialized: false,
             store: new RedisStore(config.redis_config)
         }));
-        app.use(express.static(config.path.static));
+        // app.use('/static', express.static(config.path.static));
         app.use(filter.before);
         regist('controller');
         eventEmitter.on('regist_completed', function (params) {
