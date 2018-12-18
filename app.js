@@ -45,7 +45,6 @@ var app = express();
             saveUninitialized: false,
             store: new RedisStore(config.redis_config)
         }));
-        // app.use('/static', express.static(config.path.static));
         app.use(filter.before);
         regist('controller');
         eventEmitter.on('regist_completed', function (params) {

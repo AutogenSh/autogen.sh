@@ -43,7 +43,6 @@ module.exports = (function () {
         (req => new Promise((resolve, reject) => {
             // verify vercode
             req.result = {};
-            console.log('###### captcha session[%s] req[%s]', req.session.captcha, req.vercode);
             if (req.vercode.toLowerCase() == req.session.captcha) {
                 resolve(req);
             } else {
