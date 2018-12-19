@@ -8,10 +8,8 @@ module.exports = (function () {
     var indexOf = (list, element) => list.indexOf(element);
 
     var get_client_ip = function (req) {
-        return req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket.remoteAddress || '';
+        var xForwardedFor = req.headers['x-forwarded-for'] || 'null';
+        return xForwardedFor.replace(/ /g, '');  // replace space for awk
     };
 
     var before = function (req, res, next) {

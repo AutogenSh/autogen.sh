@@ -33,6 +33,7 @@ var app = express();
         config.sphinx.SetServer(config.sphinx_config.host, config.sphinx_config.port);
         config.sphinx.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED);
 
+        app.enable('trust proxy');
         app.use(helmet());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
