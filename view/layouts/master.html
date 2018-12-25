@@ -12,6 +12,8 @@
     <title>{%- block title -%}{%- endblock -%}</title>
     <style>
         body {
+            overflow: unset !important;
+            -webkit-overflow-scrolling: touch;
             background-color: #f2f2f2;
         }
         blockquote {
@@ -26,6 +28,7 @@
         }
         .layui-body {
             left: 200px;
+            -webkit-overflow-scrolling: touch;
         }
         .layui-footer {
             left: 200px;
@@ -70,6 +73,7 @@
 
         .layui-layout-admin .layui-side {
             top: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .layui-layout-admin .layui-footer {
@@ -137,7 +141,7 @@
             background: transparent;
         }
         select::-ms-expand { display: none; }
-        #page select {
+        .layui-laypage-limits select, #page select {
             appearance:none;
             -moz-appearance:none;
             -webkit-appearance:none;

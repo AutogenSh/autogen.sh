@@ -1,28 +1,28 @@
-{% extends '../layouts/master.html' %}
+{%- extends '../layouts/master.html' -%}
 
-{% block title %}用户管理 - Autogen's Lab{% endblock %}
+{%- block title -%}用户管理 - Autogen's Lab{%- endblock -%}
 
-{% block css %}
+{%- block css -%}
 <style>
     .layui-card span {
-    margin-left: 8px;
-}
-.layui-icon {
-    margin-bottom: -3px;
-}
-</style>
-{% endblock %}
+        margin-left: 8px;
+    }
+    .layui-icon {
+        margin-bottom: -3px;
+    }
+    </style>
+{%- endblock -%}
 
-{% block content %}
+{%- block content -%}
 <div class="layui-col-md12">
     <div class="layui-card">
-        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i><span>用户管理</span>
-            <span class="userinfo">管理员:&nbsp;{{session.user.name}}&nbsp;&nbsp;|&nbsp;&nbsp;<a href='/admin/logout'>退出</a></span></div>
+        <div class="layui-card-header"><i class="layui-icon layui-icon-set"></i>
+            <span>用户管理</span>
+            <span class="userinfo">管理员:&nbsp;{{session.user.name}}&nbsp;&nbsp;|&nbsp;&nbsp;<a href='/admin/logout'>退出</a></span>
         </div>
+
         <div class="layui-card-body">
             <!--   -->
-
-
             <table class="layui-hide" id="user-table" lay-filter="user-table"></table>
 
             <script type="text/html" id="toolbar">
@@ -40,9 +40,6 @@
                 <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                 <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
             </script>
-
-
-
             <!--   -->
         </div>
     </div>
@@ -65,9 +62,9 @@
                     <div class="layui-input-block">
                     <select id="role" name="role" lay-filter="role" lay-verify="required">
                         <option value=""></option>
-                        {% for role in roles %}
+                        {%- for role in roles -%}
                         <option value="{{role.id}}">{{role.name}}</option>
-                        {% endfor %}
+                        {%- endfor -%}
                     </select>
                     </div>
                 </div>
@@ -76,9 +73,9 @@
     </div>
 </script>
 
-{% endblock %}
+{%- endblock -%}
 
-{% block javascript %}
+{%- block javascript -%}
 <script>
     layui.use(['table', 'jquery', 'form', 'element'], function () {
         var table = layui.table;
@@ -96,9 +93,9 @@
                 , { field: 'name', title: '用户名', width: 120, sort: true }
                 , { field: 'role', title: '角色', width: 120, sort: true, templet: function (d) {
                         switch (d.role) {
-                            {% for role in roles %}
+                            {%- for role in roles -%}
                             case {{role.id}}: return '{{role.name}}';
-                            {% endfor %}
+                            {%- endfor -%}
                         }
                     }
                 }
@@ -189,4 +186,4 @@
         });
     });
 </script>
-{% endblock %}
+{%- endblock -%}
