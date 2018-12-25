@@ -1,5 +1,5 @@
 
-var convert = (function () {
+module.exports = (function () {
     return {
         int: function (str, defval) {
             var val = parseInt(str);
@@ -10,5 +10,3 @@ var convert = (function () {
         }
     }
 })();
-
-module.exports = convert;

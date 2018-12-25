@@ -2,7 +2,7 @@
 var config = require('../config/config');
 
 module.exports = (function () {
-    var query_sphinx = function (keyword, index, offset, limit, success, error) {
+    var querySphinx = function (keyword, index, offset, limit, success, error) {
         if (limit > 0) {
             config.sphinx.SetLimits(offset, limit);
         }
@@ -32,7 +32,7 @@ module.exports = (function () {
             if (req.params == null) {
                 req.params = [];
             }
-            query_sphinx(req.tag, req.index, (req.page - 1) * req.limit, req.limit, function success(data) {
+            querySphinx(req.tag, req.index, (req.page - 1) * req.limit, req.limit, function success(data) {
                 req.data = data;
                 resolve(req);
             }, function error(err) {

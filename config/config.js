@@ -5,7 +5,7 @@
 var path = require('path');
 var marked = require('marked');
 
-var config = (function () {
+module.exports = (function () {
 
     var dirs = (function () {
         var root = path.join(__dirname, '..');
@@ -19,7 +19,7 @@ var config = (function () {
         };
     })();
 
-    var mysql_config = (function () {
+    var mysqlConfig = (function () {
         return {
             host: '192.168.50.128',
             port: '3306',
@@ -32,7 +32,7 @@ var config = (function () {
         };
     })();
 
-    var redis_config = (function () {
+    var redisConfig = (function () {
         return {
             host: '192.168.50.128',
             port: 6379,
@@ -63,7 +63,7 @@ var config = (function () {
         };
     })();
 
-    var sphinx_config = (function(){
+    var sphinxConfig = (function(){
         return {
             host: '192.168.50.128',
             port: 9312,
@@ -75,15 +75,11 @@ var config = (function () {
         redis: null,    // need to set in app.js
         sphinx: null,   // need to set in app.js
         path: dirs,
-        mysql_config: mysql_config,
-        redis_config: redis_config,
-        sphinx_config: sphinx_config,
+        mysqlConfig: mysqlConfig,
+        redisConfig: redisConfig,
+        sphinxConfig: sphinxConfig,
         nunjucks: nunjucks,
         marked: md,
         cookie: cookie
     };
 })();
-
-// console.log('config:\n%s', JSON.stringify(config, null, 4))
-
-module.exports = config

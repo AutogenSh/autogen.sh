@@ -2,7 +2,7 @@
  * admin
  *
  */
-var admin_service = require('../service/admin_service');
+var adminService = require('../service/admin_service');
 var router = require('express').Router();
 var convert = require('../util/convert');
 var bcrypt = require('bcryptjs');
@@ -10,7 +10,7 @@ var svgCaptcha = require('svg-captcha');
 
 module.exports = (function () {
 
-    var login_filter = function (req, res, next) {
+    var loginFilter = function (req, res, next) {
         if (req.session.user.id == 10001) {
             res.redirect('/admin/login');
         } else {
@@ -51,7 +51,7 @@ module.exports = (function () {
                 reject(req);
             }
         }))(req)
-            .then(admin_service.get_user_by_name)
+            .then(adminService.getUserByName)
             .then(req => new Promise((resolve, reject) => {
                 if (req.user == null) {
                     // username error
@@ -63,7 +63,7 @@ module.exports = (function () {
                 }
             }))
             .then(req => new Promise((resolve, reject) => { req.id = req.user.role; resolve(req) }))
-            .then(admin_service.get_access_by_role)
+            .then(adminService.getAccessByRole)
             .then(req => new Promise((resolve, reject) => {
                 req.user.access = [];
                 req.accesses.forEach(element => {
@@ -91,7 +91,7 @@ module.exports = (function () {
             });
     });
 
-    router.use(login_filter);
+    router.use(loginFilter);
 
     router.get('/logout', function (req, res) {
         req.session.destroy(function() {
@@ -100,7 +100,7 @@ module.exports = (function () {
     });
 
     router.get('/tag', function (req, res) {
-        admin_service.get_menu(req)
+        adminService.getMenu(req)
             .then(function (req) {
                 res.render('admin/tag.html', req)
             })
@@ -110,8 +110,8 @@ module.exports = (function () {
     });
 
     router.get('/tag/data', function (req, res) {
-        admin_service.get_tag_count(req)
-            .then(admin_service.get_tag_list)
+        adminService.getTagCount(req)
+            .then(adminService.getTagList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -131,7 +131,7 @@ module.exports = (function () {
     router.post('/tag/update', function (req, res) {
         req.id = convert.int(req.body.id, 0);
         req.name = req.body.name.trim()
-        admin_service.update_tag(req)
+        adminService.updateTag(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -149,7 +149,7 @@ module.exports = (function () {
 
     router.post('/tag/add', function (req, res) {
         req.name = req.body.name.trim()
-        admin_service.insert_tag(req)
+        adminService.insertTag(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -167,7 +167,7 @@ module.exports = (function () {
 
     router.post('/tag/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.delete_tag(req)
+        adminService.deleteTag(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -186,7 +186,7 @@ module.exports = (function () {
     // ==========================================================
 
     router.get('/access', function (req, res) {
-        admin_service.get_menu(req)
+        adminService.getMenu(req)
             .then(function (req) {
                 res.render('admin/access.html', req)
             })
@@ -196,8 +196,8 @@ module.exports = (function () {
     })
 
     router.get('/access/data', function (req, res) {
-        admin_service.get_access_count(req)
-            .then(admin_service.get_access_list)
+        adminService.getAccessCount(req)
+            .then(adminService.getAccessList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -218,7 +218,7 @@ module.exports = (function () {
         req.id = convert.int(req.body.id, 0);
         req.access = req.body.access.trim()
         req.name = req.body.name.trim()
-        admin_service.update_access(req)
+        adminService.updateAccess(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -237,7 +237,7 @@ module.exports = (function () {
     router.post('/access/add', function (req, res) {
         req.access = req.body.access.trim()
         req.name = req.body.name.trim()
-        admin_service.insert_access(req)
+        adminService.insertAccess(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -255,7 +255,7 @@ module.exports = (function () {
 
     router.post('/access/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.delete_access(req)
+        adminService.deleteAccess(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -276,7 +276,7 @@ module.exports = (function () {
 
 
     router.get('/menu', function (req, res) {
-        admin_service.get_menu(req)
+        adminService.getMenu(req)
             .then(function (req) {
                 res.render('admin/menu.html', req)
             })
@@ -286,8 +286,8 @@ module.exports = (function () {
     })
 
     router.get('/menu/data', function (req, res) {
-        admin_service.get_menu_count(req)
-            .then(admin_service.get_menu_list)
+        adminService.getMenuCount(req)
+            .then(adminService.getMenuList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -311,7 +311,7 @@ module.exports = (function () {
         req.access = req.body.access.trim()
         req.logo = req.body.logo.trim()
         req.url = req.body.url.trim()
-        admin_service.update_menu(req)
+        adminService.updateMenu(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -333,7 +333,7 @@ module.exports = (function () {
         req.access = req.body.access.trim()
         req.logo = req.body.logo.trim()
         req.url = req.body.url.trim()
-        admin_service.insert_menu(req)
+        adminService.insertMenu(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -351,7 +351,7 @@ module.exports = (function () {
 
     router.post('/menu/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.delete_menu(req)
+        adminService.deleteMenu(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -371,7 +371,7 @@ module.exports = (function () {
     // ==========================================================
 
     router.get('/role', function (req, res) {
-        admin_service.get_menu(req)
+        adminService.getMenu(req)
             .then(function (req) {
                 res.render('admin/role.html', req)
             })
@@ -381,8 +381,8 @@ module.exports = (function () {
     })
 
     router.get('/role/data', function (req, res) {
-        admin_service.get_role_count(req)
-            .then(admin_service.get_role_list)
+        adminService.getRoleCount(req)
+            .then(adminService.getRoleList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -402,7 +402,7 @@ module.exports = (function () {
     router.post('/role/update', function (req, res) {
         req.id = convert.int(req.body.id, 0);
         req.name = req.body.name.trim()
-        admin_service.update_role(req)
+        adminService.updateRole(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -420,7 +420,7 @@ module.exports = (function () {
 
     router.post('/role/add', function (req, res) {
         req.name = req.body.name.trim()
-        admin_service.insert_role(req)
+        adminService.insertRole(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -438,7 +438,7 @@ module.exports = (function () {
 
     router.post('/role/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.del_role(req)
+        adminService.delRole(req)
             .then(function (req) {
                 var json = {};
                 json.code = 0;
@@ -457,7 +457,7 @@ module.exports = (function () {
     // ==========================================================
 
     router.get('/article', function (req, res) {
-        admin_service.get_menu(req)
+        adminService.getMenu(req)
             .then(function (req) {
                 res.render('admin/article.html', req)
             })
@@ -467,8 +467,8 @@ module.exports = (function () {
     })
 
     router.get('/article/data', function (req, res) {
-        admin_service.get_article_count(req)
-            .then(admin_service.get_article_list)
+        adminService.getArticleCount(req)
+            .then(adminService.getArticleList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -491,8 +491,8 @@ module.exports = (function () {
         req.summary = req.body.summary.trim()
         req.status = req.body.status.trim()
         req.body = req.body.body.trim()
-        admin_service.update_article(req)
-            .then(admin_service.update_article_body)
+        adminService.updateArticle(req)
+            .then(adminService.updateArticleBody)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -512,8 +512,8 @@ module.exports = (function () {
         req.summary = req.body.summary.trim()
         req.status = req.body.status.trim()
         req.body = req.body.body.trim()
-        admin_service.insert_article(req)
-            .then(admin_service.update_article_body)
+        adminService.insertArticle(req)
+            .then(adminService.updateArticleBody)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -531,7 +531,7 @@ module.exports = (function () {
 
     router.post('/article/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.del_article(req)
+        adminService.delArticle(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -550,7 +550,7 @@ module.exports = (function () {
     router.post('/article/body/update', function (req, res) {
         req.id = convert.int(req.body.id, 0);
         req.body = req.body.body
-        admin_service.update_article_body(req)
+        adminService.updateArticleBody(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -568,7 +568,7 @@ module.exports = (function () {
 
     router.get('/article/body/:id', function (req, res) {
         req.id = convert.int(req.params.id, 0)
-        admin_service.get_article_body(req)
+        adminService.getArticleBody(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -588,8 +588,8 @@ module.exports = (function () {
     // ==========================================================
 
     router.get('/user', function (req, res) {
-        admin_service.get_menu(req)
-            .then(admin_service.get_allroles)
+        adminService.getMenu(req)
+            .then(adminService.getAllRoles)
             .then(function (req) {
                 res.render('admin/user.html', req)
             })
@@ -599,8 +599,8 @@ module.exports = (function () {
     })
 
     router.get('/user/data', function (req, res) {
-        admin_service.get_user_count(req)
-            .then(admin_service.get_user_list)
+        adminService.getUserCount(req)
+            .then(adminService.getUserList)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -621,7 +621,7 @@ module.exports = (function () {
         req.id = convert.int(req.body.id, 0);
         req.role = convert.int(req.body.role, 0);
         req.name = req.body.name.trim();
-        admin_service.update_user(req)
+        adminService.updateUser(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -640,7 +640,7 @@ module.exports = (function () {
     router.post('/user/add', function (req, res) {
         req.role = convert.int(req.body.role, 0)
         req.name = req.body.name.trim()
-        admin_service.insert_user(req)
+        adminService.insertUser(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0
@@ -658,7 +658,7 @@ module.exports = (function () {
 
     router.post('/user/del', function (req, res) {
         req.id = convert.int(req.body.id, 0);
-        admin_service.delete_user(req)
+        adminService.deleteUser(req)
             .then(function (req) {
                 var json = {}
                 json.code = 0

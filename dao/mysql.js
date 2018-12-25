@@ -3,7 +3,7 @@ var fs = require('fs');
 var config = require('../config/config');
 
 module.exports = (function () {
-    var query_mysql = function (sql, params, success, error) {
+    var queryMysql = function (sql, params, success, error) {
         config.mysql.getConnection(function (err, conn) {
             if (err) {
                 console.log('mysql.getConnection error, sql: %s, errmsg: %s', sql, err);
@@ -37,7 +37,7 @@ module.exports = (function () {
             if (req.params == null) {
                 req.params = [];
             }
-            query_mysql(req.sql, req.params, function success(data) {
+            queryMysql(req.sql, req.params, function success(data) {
                 req.data = data;
                 resolve(req);
             }, function error(err) {

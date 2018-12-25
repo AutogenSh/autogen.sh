@@ -9,7 +9,7 @@ var router = require('express').Router();
 module.exports = (function () {
     router.get('/search', function(req, res) {
         req.tag = req.query.tag.trim();
-        service.search_article(req)
+        service.searchArticle(req)
             .then(function(req) {
                 res.json(req.data);
             })
@@ -19,9 +19,9 @@ module.exports = (function () {
     });
 
     router.get('/', function (req, res) {
-        service.get_menu(req)
-            .then(service.get_publish_article_count)
-            .then(service.get_publish_article_list)
+        service.getMenu(req)
+            .then(service.getPublishArticleCount)
+            .then(service.getPublishArticleList)
             .then(function (req) {
                 res.render('index.html', req);
             })
@@ -34,8 +34,8 @@ module.exports = (function () {
         req.page = convert.int(req.params.page, 1);
         req.limit = convert.int(req.params.limit, 10);
         req.tag = req.params.tag.trim();
-        service.get_menu(req)
-            .then(service.search_article)
+        service.getMenu(req)
+            .then(service.searchArticle)
             .then(function (req) {
                 req.total = req.data.total;
                 req.articles = [];
@@ -55,7 +55,7 @@ module.exports = (function () {
     });
 
     router.get('/about', function(req, res) {
-        service.get_menu(req)
+        service.getMenu(req)
             .then(function (req) {
                 res.render('about.html', req);
             })

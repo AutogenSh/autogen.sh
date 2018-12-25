@@ -27,10 +27,10 @@ var app = express();
         config.nunjucks.express = app;
         nunjucks.configure(config.path.view, config.nunjucks);
         marked.setOptions(config.marked);
-        config.mysql = mysql.createPool(config.mysql_config);
-        config.redis = redis.createClient(config.redis_config);
+        config.mysql = mysql.createPool(config.mysqlConfig);
+        config.redis = redis.createClient(config.redisConfig);
         config.sphinx = new SphinxClient();
-        config.sphinx.SetServer(config.sphinx_config.host, config.sphinx_config.port);
+        config.sphinx.SetServer(config.sphinxConfig.host, config.sphinxConfig.port);
         config.sphinx.SetMatchMode(SphinxClient.SPH_MATCH_EXTENDED);
 
         app.enable('trust proxy');
@@ -44,13 +44,13 @@ var app = express();
             cookie: config.cookie,
             resave: true,
             saveUninitialized: false,
-            store: new RedisStore(config.redis_config)
+            store: new RedisStore(config.redisConfig)
         }));
         app.use(filter.before);
         regist('controller');
         eventEmitter.on('regist_completed', function (params) {
-            app.use(filter.page_not_found);
-            app.use(filter.server_error);
+            app.use(filter.pageNotFound);
+            app.use(filter.serverError);
         });
     }
 

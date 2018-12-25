@@ -9,9 +9,9 @@ module.exports = (function () {
 
     router.get('/:id', function (req, res, next) {
         req.id = req.params.id;
-        service.get_menu(req)
-            .then(service.get_article_detail)
-            .then(service.get_markdown)
+        service.getMenu(req)
+            .then(service.getArticleDetail)
+            .then(service.getMarkDown)
             .then(req => res.render('post.html', req))
             .catch(reason => next(reason));
     });
