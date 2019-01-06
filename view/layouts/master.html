@@ -237,12 +237,19 @@
         });
     }
 
+    function getPath() {
+        var arr = location.href.split("//");
+        var start = arr[1].indexOf("/");
+        var path = arr[1].substring(start);
+        return path;
+    }
+
     layui.extend({
         cookie: '{/}http://static.autogen.sh/layui/cookie' // {/}的意思即代表采用自有路径，即不跟随 base 路径
     });
 
     layui.use(['layer', 'jquery', 'cookie'], function () {
-        var $ = layui.$;
+        window.$ = layui.$;
         var layer = layui.layer;
         var cookie = layui.cookie;
 
@@ -258,6 +265,8 @@
             }
             $.cookie('navex', navex, { expires: 30, path: '/' });
         });
+
+        $('.layui-nav a[href="' + getPath() + '"]').parent('.layui-nav-item').addClass('layui-nav-itemed');
     });
 </script>
 {%- block javascript -%}{%- endblock -%}
