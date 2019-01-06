@@ -22,8 +22,8 @@
         .layui-bg-black {
             background-color: #20222A !important;
         }
-        {%- if navex === 'true' -%}
-        .layui-side {
+        {% if navex === 'true' %}
+        .layui-side.layui-bg-black{
             width: 200px;
 	        transition:with .2s;
 	        -webkit-transition:width .2s; /* Safari */
@@ -46,8 +46,8 @@
         .layui-nav-item span {
             display: initial;
         }
-        {%- else -%}
-        .layui-side {
+        {% else %}
+        .layui-side.layui-bg-black {
             width: 50px;
 	        transition:with .2s;
 	        -webkit-transition:width .2s; /* Safari */
