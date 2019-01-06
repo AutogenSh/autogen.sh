@@ -19,12 +19,19 @@
         blockquote {
             background-color: #fafafa;
         }
+        .layui-bg-black {
+            background-color: #20222A !important;
+        }
         {%- if navex === 'true' -%}
-        .layui-side.layui-bg-black {
+        .layui-side {
             width: 200px;
+	        transition:with .2s;
+	        -webkit-transition:width .2s; /* Safari */
         }
         .layui-nav.layui-nav-tree {
             width: 200px;
+	        transition:with .2s;
+	        -webkit-transition:width .2s; /* Safari */
         }
         .layui-body {
             left: 200px;
@@ -40,11 +47,15 @@
             display: initial;
         }
         {%- else -%}
-        .layui-side.layui-bg-black {
+        .layui-side {
             width: 50px;
+	        transition:with .2s;
+	        -webkit-transition:width .2s; /* Safari */
         }
         .layui-nav.layui-nav-tree {
             width: 50px;
+	        transition:with .2s;
+	        -webkit-transition:width .2s; /* Safari */
         }
         .layui-body {
             left: 50px;
@@ -59,8 +70,9 @@
             display: none;
         }
         {%- endif -%}
-        .layui-nav * {
+        .layui-nav,.layui-nav * {
             font-size: 15px;
+            background-color: transparent;
         }
 
         .layui-icon {
@@ -116,12 +128,12 @@
         .layui-card .layui-card-header {
             color: #333;
             font-weight: 500;
-            height: 36px;
-            line-height: 38px;
-            font-size: 15px;
+            height: 42px;
+            line-height: 42px;
+            font-size: 14px;
         }
         .layui-card .layui-card-body {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 30px;
             color: #666;
         }
@@ -151,6 +163,11 @@
             padding: 0 10px;
             height: 30px;
             line-height: 30px;
+        }
+        .layui-nav-itemed {
+            transition: all .2s;
+            -webkit-transition: all .2s;
+            background-color: #009688 !important;
         }
         #search-box {
             padding-left: 42px;
@@ -217,7 +234,7 @@
 <script src="//static.autogen.sh/layui/layui.js" charset="utf-8"></script>
 <script>
     function expand($) {
-        $('.layui-side.layui-bg-black').width(200); //设置宽度
+        $('.layui-side').width(200); //设置宽度
         $('.layui-nav.layui-nav-tree').width(200); //设置宽度
         $('.layui-body').css('left', '200px');
         $('.layui-footer').css('left', '200px');
@@ -227,7 +244,7 @@
         });
     }
     function collapse($) {
-        $('.layui-side.layui-bg-black').width(50); //设置宽度
+        $('.layui-side').width(50); //设置宽度
         $('.layui-nav.layui-nav-tree').width(50); //设置宽度
         $('.layui-body').css('left', '50px');
         $('.layui-footer').css('left', '50px');
@@ -249,9 +266,11 @@
     });
 
     layui.use(['layer', 'jquery', 'cookie'], function () {
-        window.$ = layui.$;
+        var $ = layui.$;
         var layer = layui.layer;
         var cookie = layui.cookie;
+
+        $('.layui-nav a[href="' + getPath() + '"]').parent('.layui-nav-item').addClass('layui-nav-itemed');
 
         // Navicat缩放
         var navex = $.cookie('navex');
@@ -265,8 +284,6 @@
             }
             $.cookie('navex', navex, { expires: 30, path: '/' });
         });
-
-        $('.layui-nav a[href="' + getPath() + '"]').parent('.layui-nav-item').addClass('layui-nav-itemed');
     });
 </script>
 {%- block javascript -%}{%- endblock -%}
