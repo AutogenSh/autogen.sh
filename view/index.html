@@ -3,6 +3,23 @@
 {%- block title -%}Autogen's Lab / 服务端开发{%- endblock -%}
 
 {%- block css -%}
+<style>
+.layui-card  {
+    cursor:pointer;
+}
+.layui-card .layui-card-header {
+    color: #333;
+    font-weight: 500;
+    height: 42px;
+    line-height: 42px;
+    font-size: 15px;
+}
+.layui-card .layui-card-body {
+    font-size: 15px;
+    line-height: 30px;
+    color: #666;
+}
+</style>
 {%- endblock -%}
 
 {%- block search -%}
@@ -15,8 +32,8 @@
 {%- block content -%}
 {%- for item in articles -%}
 <div class="layui-col-md12">
-    <div class="layui-card">
-        <div class="layui-card-header"><a href="/post/{{item.id}}">{{item.title}}</a></div>
+    <div class="layui-card" data-id="{{item.id}}">
+        <div class="layui-card-header"><a href="javascript:;">{{item.title}}</a></div>
         <div class="layui-card-body">
             摘要: {{item.summary}}<br>
             <span class="update-time">发布时间：{{item.create_at}}</span>
@@ -82,8 +99,8 @@
             $('#search-box').focus();
         }
 
-        $('#search-box').bind('keydown', function (event) {
-            if (event.keyCode == "13") {
+        $('#search-box').bind('keydown', function (ev) {
+            if (ev.keyCode == "13") {
                 var tag = $('#search-box').val();
                 if (tag == '') {
                     location.href = '/';
@@ -91,6 +108,10 @@
                     location.href = '/tag/' + tag;
                 }
             }
+        });
+
+        $('.layui-card').on('click', function (ev){
+            location.href = '/post/' + $(this).data('id');
         });
     })
 </script>
