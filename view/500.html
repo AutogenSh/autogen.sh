@@ -10,27 +10,20 @@
     <link rel="stylesheet" href="//static.autogen.sh/font-mfizz/font-mfizz.css?t=20181212-2" media="all">
     <title>500 - Autogen's Lab</title>
     <style>
+        div {
+            font-size: 16px;
+        }
         .layui-container {
             width: 400px;
+            text-align: center;
+            margin-top: 20px;
         }
         .layui-icon {
             font-size: 200px;
         }
-        p {
+        div.title {
             font-size: 28px;
-            float: left;
             line-height: 38px;
-        }
-        div {
-            font-size: 16px;
-        }
-        .layui-btn {
-            float: left;
-            line-height: 38px;
-            margin-left: 20px;
-        }
-        .clear {
-            clear: both;
         }
     </style>
 </head>
@@ -39,13 +32,12 @@
     <div class="layui-container fly-marginTop">
         <div class="fly-panel">
             <div class="fly-none">
-                <h2><i class="layui-icon layui-icon-face-cry"></i></h2>
+                <h3><i class="layui-icon layui-icon-face-cry"></i></h2>
                 <br><br><br>
-                <p>服务器出错啦</p>
+                <div class="title">服务器出错啦</div>
+                <br><br>
                 <a href="/" class="layui-btn">返回首页</a>
-                <div class="clear"></div>
                 <br>
-                {#<div>{{ error }}</div>#}
             </div>
         </div>
     </div>
